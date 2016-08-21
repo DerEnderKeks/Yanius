@@ -1,3 +1,5 @@
 /**
  * This file overrides default.json if "NODE_ENV" is set to "production"
  */
+
+{}
