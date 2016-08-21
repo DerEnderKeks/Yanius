@@ -1,0 +1,40 @@
+extends ./index
+
+block innerContent
+  div#content
+    .row
+      .col.s10.offset-s1
+        br
+        h3.blue-grey-text Account
+        form.col.s12
+          .row
+            .col.s12.input-field
+              input#username(type='text', name='username', value=searchedUser.username, readonly)
+              label(for='username') Username
+          .row
+            .col.s12.input-field
+              input#email.validate(type='email', name='email', value=searchedUser.email)
+              label(for='email') Email
+          .row
+            .col.s12.input-field
+              input#password.validate(type='password', name='password', pattern='^[\\x00-\\x7F]{8,50}$')
+              label(for='password') Password
+          .row
+            .col.s11.input-field
+              input#apiKey(type='text', name='apiKey', value=searchedUser.apiKey, readonly)
+              label(for='password') API Key
+            .col.s1
+              a.btn-floating.tooltipped(data-position='left', data-delay='50', data-tooltip='Regenerate API Key', onclick='regenerateAPIKey()')
+                i.material-icons refresh
+          .row
+            br
+            .col.right
+              br.hide-on-med-and-up
+              br.hide-on-med-and-up
+              a.btn.waves-effect.waves-light(onclick='editUser()') Save
+                i.material-icons.right check
+
+block scripts
+  script.
+    window.user = {id: '#{searchedUser.id}'}
+  script(type='text/javascript' src='/js/dashboard/account.js')

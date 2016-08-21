@@ -1,0 +1,59 @@
+extends ../layout
+
+block content
+  // SideNav and Navbar
+  header
+    - if (messages.error)
+      #error.modal.red.white-text
+        .modal-content
+          - if (messages.errorHeader)
+            h4= messages.errorHeader
+          - else
+            h4 An error occurred
+            br
+            h5= messages.error
+        .modal-footer.red
+          a.modal-action.modal-close.waves-effect.waves-purple.btn-flat.white-text(href='#!') Ok
+    #modal.modal
+      .modal-content#modalcontent
+      .modal-footer#modalfooter
+    ul.side-nav.fixed#slide-out
+      li
+        .userView
+          .background.purple.darken-3
+          - var settingsUrl = '/dashboard/user'
+          a(href='#{settingsUrl}')
+            img.circle(src='/images/favicon.svg')
+          a.white-text.truncate.name(href='#{settingsUrl}') #{user.username}
+          a.white-text.truncate.email(href='#{settingsUrl}') #{user.email}
+      li#files
+        a.blue-grey-text(href='/dashboard/files') Files
+          i.material-icons folder
+      if user.isAdmin == true
+        li.divider
+        li#users
+          a.blue-grey-text(href='/dashboard/users') Users
+            i.material-icons people
+        li#allfiles
+          a.blue-grey-text(href='/dashboard/files/g') All Files
+            i.material-icons folder
+      li.divider
+      li#account
+        a.blue-grey-text(href='/dashboard/account') Account
+          i.material-icons account_circle
+      li#logout
+        a.blue-grey-text(href='/dashboard/logout') Logout
+          i.material-icons settings_backup_restore
+    .navbar-fixed.hide-on-large-only
+      nav
+        .nav-wrapper
+          a.button-collapse(href='#!', data-activates='slide-out', style='margin-left: 15px')
+            i.material-icons menu
+
+  // Main content
+  main
+    block innerContent
+block scripts
+  - if (messages.error)
+    script.
+      $('#error').openModal();

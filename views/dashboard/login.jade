@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+  .valign-wrapper
+    .row.valign
+      .card.col.m8.offset-m2(style='margin-top: 50%')
+        .card-content.center
+          .row
+            span.card-title Login
+            .col.s12
+              - if (messages.error)
+              #error.modal
+                .modal-content
+                  h4 Login failed!
+                  br
+                  h5= messages.error
+                .modal-footer
+                  a.modal-action.modal-close.waves-effect.waves-green.btn-flat(href='#!') Ok
+              form(method='post')
+                .col.s12
+                  input(placeholder='Username', id='username', name='username', type='text')
+                .col.s12
+                  input(placeholder='Password', id='password', name='password', type='password')
+                .row
+                  .col.s12.m6
+                    input(type='checkbox', id='remember_me', name='remember_me')
+                    label(for='remember_me') Stay signed in
+                  .col.s12.m6
+                    button.btn.waves-effect.waves-light(type='submit', name='action') Login
+                      i.material-icons.right send
+block scripts
+  - if (messages.error)
+    script.
+      $('#error').openModal();

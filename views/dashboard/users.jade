@@ -1,0 +1,95 @@
+extends ./index
+
+block innerContent
+  div#loader(style='z-index: 999999')
+    .row
+      .col.s12
+        .valign-wrapper(style='height: 100vh')
+          .valign.center(style='width: 100%')
+            .preloader-wrapper.big.active
+              .spinner-layer.spinner-blue
+                .circle-clipper.left
+                  .circle
+                .gap-patch
+                  .circle
+                .circle-clipper.right
+                  .circle
+              .spinner-layer.spinner-red
+                .circle-clipper.left
+                  .circle
+                .gap-patch
+                  .circle
+                .circle-clipper.right
+                  .circle
+              .spinner-layer.spinner-yellow
+                .circle-clipper.left
+                  .circle
+                .gap-patch
+                  .circle
+                .circle-clipper.right
+                  .circle
+              .spinner-layer.spinner-green
+                .circle-clipper.left
+                  .circle
+                .gap-patch
+                  .circle
+                .circle-clipper.right
+                  .circle
+  div.fixed-action-btn#addbutton(style='bottom:24px;right:24px')
+    a.pointer.right.btn-floating.btn-large.waves-effect.waves-light(onclick='addUser(false)')
+      i.material-icons person_add
+  div#modals
+    .modal#addUserModal
+      .modal-content#modalcontent
+        .row
+          form.col.s12
+            .row
+              .col.s12
+                h4 Create User
+            .row
+              .input-field.col.s12
+                input#username.validate(type='text', name='username', pattern='^[a-zA-Z0-9_]{4,24}$')
+                label(for='username') Username
+            .row
+              .input-field.col.s12
+                input#email.validate(type='email', name='email', required)
+                label(for='email') Email
+            .row
+              .input-field.col.s12
+                input#password.validate(type='password', name='password', pattern='^[\\x00-\\x7F]{8,50}$')
+                label(for='password') Password
+            .row
+              .input-field.col.s12.m3
+                .switch
+                  label Enabled
+                    input(type='checkbox', name='enabled', checked=true)
+                    span.lever
+              br.hide-on-med-and-up
+              .input-field.col.s12.m3
+                .switch
+                  label Admin
+                    input(type='checkbox', name='isAdmin', checked=false)
+                    span.lever
+      .modal-footer#modalfooter
+        a.modal-action.modal-close.waves-effect.waves-light.btn-flat Cancel
+        a.modal-action.modal-close.waves-effect.waves-green.btn-flat(onclick='addUser(true)') Create
+  div#content
+    .row
+      .col.s10.offset-s1
+        br
+        h3.blue-grey-text Users
+        ul.collection#userlist
+        .row
+          .col
+            a.waves-effect.waves-light.btn(onclick='loadMore()') Load more
+          .col.right#spinner
+            .preloader-wrapper.small.active
+              .spinner-layer.spinner-blue-only
+                .circle-clipper.left
+                  .circle
+                .gap-patch
+                  .circle
+                .circle-clipper.right
+                  .circle
+block scripts
+  script(type='text/javascript' src='/js/dashboard/users.js')

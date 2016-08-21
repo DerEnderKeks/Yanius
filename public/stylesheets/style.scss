@@ -1,0 +1,47 @@
+header, main, footer {
+  padding-left: 300px;
+}
+
+@media only screen and (max-width: 992px) {
+  header, main, footer {
+    padding-left: 0;
+  }
+}
+
+.side-nav.fixed
+.userView {
+  padding-left: 0px;
+}
+
+.side-nav.fixed a {
+  padding-left: 30px;
+  padding-right: 0px;
+}
+
+.side-nav
+.collapsible-header,
+.side-nav.fixed
+.collapsible-header {
+  padding-left: 30px;
+}
+
+.side-nav
+.collapsible-body
+li
+a,
+.side-nav.fixed
+.collapsible-body
+li
+a {
+  padding-left: 45px;
+}
+
+span.badge.group-badge {
+  left: unset !important;
+  right: unset !important;
+  margin-left: 5px;
+}
+
+.pointer {
+  cursor: pointer;
+}
