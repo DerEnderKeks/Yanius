@@ -24,6 +24,7 @@ exports.init = function () {
 var saltRounds = config.get('saltRounds');
 
 exports.check = function (value, valueHash) {
+  if (!value || !valueHash) return;
   return bcrypt.compareSync(value, valueHash);
 };
 

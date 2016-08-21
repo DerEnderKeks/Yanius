@@ -165,7 +165,6 @@ router.post('/users/:userId', sessionHandler.ensureAuthenticated, ensurePermitte
   var user = {};
   user.id = req.searchedUser.id;
   user.email = req.body.email;
-  user.password = null;
   if (req.body.password) user.password = req.body.password;
   user.apiKey = req.body.apiKey;
   if (req.user.isAdmin) {

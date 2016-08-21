@@ -170,10 +170,11 @@ app.use(function (req, res, next) {
 
 // error handler
 
-/*
- * development error handler (will print stacktrace)
- */
+
 if (process.env.NODE_ENV === 'development') {
+  /*
+   * development error handler (will print stacktrace)
+   */
   app.use(function (err, req, res, next) {
     if (res._header) return;
     if (err.message === 'Invalid token') {
