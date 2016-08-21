@@ -9,13 +9,13 @@ block content
             span.card-title Login
             .col.s12
               - if (messages.error)
-              #error.modal
-                .modal-content
-                  h4 Login failed!
-                  br
-                  h5= messages.error
-                .modal-footer
-                  a.modal-action.modal-close.waves-effect.waves-green.btn-flat(href='#!') Ok
+                #error.modal
+                  .modal-content
+                    h4 Login failed!
+                    br
+                    h5= messages.error
+                  .modal-footer
+                    a.modal-action.modal-close.waves-effect.waves-green.btn-flat(href='#!') Ok
               form(method='post')
                 .col.s12
                   input(placeholder='Username', id='username', name='username', type='text')
