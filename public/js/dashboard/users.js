@@ -44,8 +44,8 @@ function loadUsers() {
   });
 }
 
-function loadMore() {
-  if (blockUpdate) return;
+function loadMore(force) {
+  if (blockUpdate && !force) return;
   blockUpdate = true;
   showLoader();
   loadUsers();
@@ -62,6 +62,9 @@ function deleteUser(id, confirm) {
       type: 'DELETE'
     }).done(function (response) {
       Materialize.toast(response.message, 5000);
+      count = 0;
+      $('#userlist').html('');
+      loadMore(true);
     });
   } else {
     $('#modalcontent').html(
@@ -101,6 +104,9 @@ function addUser(confirm) { // TODO add user to list
     }).always(function (response) {
       if (response.status === 500 || response.status === 400) return addFailed(response.message);
       Materialize.toast(response.message, 5000);
+      count = 0;
+      $('#userlist').html('');
+      loadMore(true);
     });
   } else {
     $('#addUserModal').openModal();

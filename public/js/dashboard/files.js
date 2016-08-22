@@ -43,8 +43,8 @@ function loadFiles() {
   });
 }
 
-function loadMore() {
-  if (blockUpdate) return;
+function loadMore(force) {
+  if (blockUpdate && !force) return;
   blockUpdate = true;
   showLoader();
   loadFiles();
@@ -62,6 +62,9 @@ function deleteFile(id, confirm) {
       type: 'DELETE'
     }).done(function (response) {
       Materialize.toast(response.message, 5000);
+      count = 0;
+      $('#filelist').html('');
+      loadMore(true);
     });
   } else {
     $('#modalcontent').html(
