@@ -6,6 +6,7 @@ var sessionHandler = require(__dirname + '/../util/session-handler.js');
 var thinky = require(__dirname + '/../util/thinky.js');
 var r = thinky.r;
 var User = require(__dirname + '/../models/user.js');
+var config = require("config");
 
 /**
  * PARAM username
@@ -96,7 +97,7 @@ router.post('/login',
       if (err) {
         return next(err);
       }
-      res.cookie('remember_me', token, {path: '/', httpOnly: true, maxAge: 604800000});
+      res.cookie('remember_me', token, {path: '/', httpOnly: true, maxAge: 604800000, secure: config.get('httpsSupport')});
       return next();
     });
   },

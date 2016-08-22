@@ -25,6 +25,13 @@ router.param('shortname', function (req, res, next, param) {
 /**
  * GET Files
  */
+router.get('/', function (req, res, next) {
+  res.render('index');
+});
+
+/**
+ * GET Files
+ */
 router.get('/:shortname', function (req, res, next) {
   if (!req.requestedFile || req.requestedFile.hidden) {
     res.status(404);
