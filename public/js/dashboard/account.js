@@ -1,5 +1,13 @@
 var blockEdit = false;
 var blockKey = false;
+var KeyHidden = true;
+
+function showAPIKey() {
+  if (!KeyHidden) return;
+  let element = $('input[name=\'apiKey\']');
+  element.val(element.data('value'));
+  KeyHidden = false;
+}
 
 function regenerateAPIKey() {
   if (blockKey) return;

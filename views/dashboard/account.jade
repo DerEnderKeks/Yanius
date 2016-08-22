@@ -21,7 +21,7 @@ block innerContent
               label(for='password') Password
           .row
             .col.s11.input-field
-              input#apiKey(type='text', name='apiKey', value=searchedUser.apiKey, readonly)
+              input#apiKey(type='text', name='apiKey', value='<click to show>', data-value=searchedUser.apiKey, onclick='showAPIKey()', readonly)
               label(for='password') API Key
             .col.s1
               a.btn-floating.tooltipped(data-position='left', data-delay='50', data-tooltip='Regenerate API Key', onclick='regenerateAPIKey()')
