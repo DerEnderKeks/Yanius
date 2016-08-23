@@ -27,7 +27,8 @@ router.param('username', function (req, res, next, param) {
  * GET Dashboard
  */
 router.get('/', sessionHandler.ensureAuthenticated, function (req, res, next) {
-  res.render('dashboard/index', {title: 'Dashboard', user: req.user});
+  //res.render('dashboard/index', {title: 'Dashboard', user: req.user});
+  res.redirect('/dashboard/files');
 });
 
 /**
