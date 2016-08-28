@@ -66,6 +66,7 @@ If you want to make your own script/program to upload files make sure it does th
 - `POST` request to `your.domain/api/upload`
 - Form field `apikey` is set to your API Key (Get it from `your.domain/dashboard/account`)
 - Form field `file` is set to the file you want to upload
+- (Optional) Form field `hidden` is set to `true` or `false` (if a file is hidden nobody can download it)
 
 The server responds as JSON.
 

@@ -13,21 +13,48 @@ function showLoader() {
 }
 
 function appendFile(file) {
+  console.log(file.hidden)
   let htmlElement = $(
     '<li class="collection-item avatar">' +
-    '<i class="material-icons circle teal darken-3">insert_drive_file</i>' +
-    '<span class="title blue-grey-text">' + file.originalName + '</span>' +
-    (window.showUploader ? '<span class="grey-text"> uploaded by </span>' +
-    '<span class="title blue-grey-text">' + file.uploader.username + '</span>' : '') +
-    '<span class="grey-text"> (' + file.mime + ') </span>' +
-    '<p class="grey-text">' + moment(file.timestamp).tz(timezone).format('l LTS') + '</p>' +
-    '<p class="grey-text">' + file.views + ' Views</p>' +
-    '<div class="secondary-content">' +
-    '<a class="pointer" onclick="deleteFile(\'' + file.id + '\', false)">' +
-    '<i class="material-icons red-text">delete</i></a>' +
-    '<a class="pointer" target="_blank" href="/' + file.shortName + '"><i class="material-icons teal-text darken-3">file_download</i>' +
-    '</a></div></li>');
+      '<i class="material-icons circle teal darken-3">insert_drive_file</i>' +
+      '<span class="title blue-grey-text">' + file.originalName + '</span>' +
+      (window.showUploader ? '<span class="grey-text"> uploaded by </span>' +
+      '<span class="title blue-grey-text">' + file.uploader.username + '</span>' : '') +
+      '<span class="grey-text"> (' + file.mime + ') </span>' +
+      '<p class="grey-text">' + moment(file.timestamp).tz(timezone).format('l LTS') + '</p>' +
+      '<p class="grey-text">' + file.views + ' Views</p>' +
+      '<div class="secondary-content">' +
+        '<a class="pointer" onclick="deleteFile(\'' + file.id + '\', false)">' +
+          '<i class="material-icons red-text">delete</i>' +
+        '</a>' +
+        '<a class="pointer" onclick="changeVisibility(\'' + file.id + '\', ' + !file.hidden + ')">' +
+          '<i class="material-icons teal-text darken-3">' + (file.hidden ? 'visibility' : 'visibility_off') + '</i>' +
+        '</a>' +
+        '<a class="pointer" target="_blank" href="/' + file.shortName + '">' +
+          '<i class="material-icons teal-text darken-3">file_download</i>' +
+        '</a>' +
+      '</div>' +
+    '</li>');
   $('#filelist').append(htmlElement);
+}
+
+function changeVisibility(fileId, hide) {
+  let url = '/api/file/' + fileId + '/visibility';
+  $.ajax({
+    url: url,
+    type: 'POST',
+    contentType: 'application/json',
+    dataType: 'json',
+    data: JSON.stringify({hidden: hide})
+  }).done((data) => {
+    Materialize.toast(data.message, 5000);
+    count = 0;
+    $('#filelist').html('');
+    loadMore(true);
+  }).fail((data) => {
+    console.log(data)
+    Materialize.toast(JSON.parse(data.responseText).message, 5000);
+  });
 }
 
 function loadFiles() {

@@ -83,6 +83,14 @@ exports.getFile = function (id, callback) {
   });
 };
 
+exports.editFile = function (file, callback) {
+  File.get(file.id).update(file).then(function (result) {
+    return callback(null, result);
+  }).error(function (error) {
+    return callback(error, null);
+  });
+};
+
 /**
  * Get all users
  * @param startIndex startIndex

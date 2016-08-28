@@ -102,6 +102,18 @@ router.delete('/file/:fileId', sessionHandler.ensureAuthenticated, ensurePermitt
 });
 
 /**
+ * POST API - change file visibility
+ */
+router.post('/file/:fileId/visibility', sessionHandler.ensureAuthenticated, ensurePermitted, function (req, res, next) {
+  let file = req.requestedFile;
+  file.hidden = req.body.hidden;
+  databaseUtils.editFile(file, function (error, result) {
+    if (error) return end(res, 500, 'Could not change visibility');
+    return end(res, 200, 'Visibility saved');
+  })
+});
+
+/**
  * GET API - users
  */
 router.get('/users', sessionHandler.ensureAuthenticated, ensureAdminOnly, function (req, res, next) {
