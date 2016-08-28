@@ -49,7 +49,7 @@ router.get('/files', sessionHandler.ensureAuthenticated, function (req, res, nex
  * GET Dashboard - All Files
  */
 router.get('/files/g', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
-  res.render('dashboard/files', {title: 'Files', user: req.user, apiUrl: '/api/files', highlight: '#allfiles'});
+  res.render('dashboard/files', {title: 'Files', user: req.user, apiUrl: '/api/files', showUploader: true, highlight: '#allfiles'});
 });
 
 /**

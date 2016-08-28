@@ -36,6 +36,30 @@ exports.getFiles = function (startIndex, max, callback) {
   });
 };
 
+/**
+ * Get all files with user
+ * @param startIndex startIndex
+ * @param max max
+ * @param callback callback
+ */
+exports.getFilesWithUser = function (startIndex, max, callback) {
+  File.orderBy({index: r.desc("timestamp")}).getJoin({uploader: true}).skip(startIndex).limit(max).then((result) => {
+    result = result.map((element) => {
+      let uploader = element.uploader;
+      element.uploader = {};
+      element.uploader.username = uploader.username;
+      element.uploader.email = uploader.email;
+      element.uploader.enabled = uploader.enabled;
+      element.uploader.isAdmin = uploader.isAdmin;
+      element.uploader.quotaUsed = uploader.quotaUsed;
+      return element;
+    });
+    return callback(null, result);
+  }).error((error) => {
+    return callback(error, null);
+  });
+};
+
 exports.deleteFile = function (id, callback) {
   File.get(id).then(function (result) {
     fs.unlink(path.join(uploadPath, result.fileId), (error) => {

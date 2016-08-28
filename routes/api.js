@@ -85,7 +85,7 @@ router.get('/files/:username', sessionHandler.ensureAuthenticated, ensurePermitt
 router.get('/files', sessionHandler.ensureAuthenticated, ensureAdminOnly, function (req, res, next) {
   var index = req.query.index ? parseInt(req.query.index) : 0;
   var max = req.query.max ? parseInt(req.query.max) : 25;
-  databaseUtils.getFiles(index, max, (error, result) => {
+  databaseUtils.getFilesWithUser(index, max, (error, result) => {
     if (error) return next(error);
     return res.json(result);
   });

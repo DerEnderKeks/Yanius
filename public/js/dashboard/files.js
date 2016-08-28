@@ -17,7 +17,9 @@ function appendFile(file) {
     '<li class="collection-item avatar">' +
     '<i class="material-icons circle teal darken-3">insert_drive_file</i>' +
     '<span class="title blue-grey-text">' + file.originalName + '</span>' +
-    '<span class="grey-text"> (' + file.mime + ')</span>' +
+    (window.showUploader ? '<span class="grey-text"> uploaded by </span>' +
+    '<span class="title blue-grey-text">' + file.uploader.username + '</span>' : '') +
+    '<span class="grey-text"> (' + file.mime + ') </span>' +
     '<p class="grey-text">' + moment(file.timestamp).tz(timezone).format('l LTS') + '</p>' +
     '<p class="grey-text">' + file.views + ' Views</p>' +
     '<div class="secondary-content">' +
