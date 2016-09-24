@@ -13,7 +13,6 @@ function showLoader() {
 }
 
 function appendFile(file) {
-  console.log(file.hidden)
   let htmlElement = $(
     '<li class="collection-item avatar">' +
       '<i class="material-icons circle teal darken-3">insert_drive_file</i>' +
@@ -52,7 +51,6 @@ function changeVisibility(fileId, hide) {
     $('#filelist').html('');
     loadMore(true);
   }).fail((data) => {
-    console.log(data)
     Materialize.toast(JSON.parse(data.responseText).message, 5000);
   });
 }

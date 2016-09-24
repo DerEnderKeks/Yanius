@@ -18,6 +18,7 @@ var fileType = require('file-type');
 var urlJoin = require('url-join');
 var mime = require('mime');
 var hat = require('hat');
+var debug = require('debug')('yanius:api');
 
 
 function ensurePermitted(req, res, next) {
@@ -231,7 +232,7 @@ router.post('/upload', sessionHandler.authenticateAPIKey, function (req, res, ne
 
   file.mv(path.join(uploadPath, newFile.fileId), function (err) {
     if (err) {
-      console.log(err);
+      debug(err);
       return end(res, 500, 'Upload failed');
     } else {
       let generateShortname = () => {
