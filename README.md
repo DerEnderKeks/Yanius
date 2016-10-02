@@ -36,10 +36,10 @@ You also have to insert `proxy_set_header X-Forwarded-Proto https;` into your ng
 `npm start`
 
 ##### With Debug Output
-`DEBUG:"yanius:*" node --harmony ./bin/www`
+`DEBUG="yanius:*" node --harmony ./bin/www`
 
 ##### Development Mode
-`DEBUG:"yanius:*" NODE_ENV="development" node --harmony ./bin/www`
+`DEBUG="yanius:*" NODE_ENV="development" node --harmony ./bin/www`
 > **WARNING:** Don't use this in production. Seriously. This mode show stacktraces to the user.
 
 #### How To Upload Files
