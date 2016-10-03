@@ -26,7 +26,8 @@ router.param('shortname', function (req, res, next, param) {
  * GET Files
  */
 router.get('/', function (req, res, next) {
-  res.render('index');
+  if (req.user) return res.redirect('/dashboard');
+  return res.render('index');
 });
 
 /**
