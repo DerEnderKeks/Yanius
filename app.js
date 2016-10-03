@@ -81,7 +81,18 @@ deasync.loopWhile(function () {
   // Wait until sessionSecret is set
   return !sessionSecret
 });
-app.use(session({
+
+function sessionToggle(fn) {
+  return (req, res, next) => {
+    if (req.path === '/api/upload' && req.method === 'POST') {
+      next();
+    } else {
+      fn(req, res, next);
+    }
+  }
+}
+
+app.use(sessionToggle(session({
   secret: sessionSecret,
   name: 'yanius_sesssion',
   cookie: {
@@ -91,7 +102,8 @@ app.use(session({
   store: sessionStore,
   resave: true,
   saveUninitialized: true
-}));
+})));
+
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());

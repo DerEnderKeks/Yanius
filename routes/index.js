@@ -48,8 +48,7 @@ router.get('/:shortname', function (req, res, next) {
     if (req.requestedFile.mime.startsWith('application/') && disableDownload.indexOf(req.requestedFile.mime) < 0) res.attachment(req.requestedFile.originalName);
     res.append('Last-Modified', req.requestedFile.timestamp.toUTCString());
     res.sendFile(filePath, {headers: {'Content-Type': req.requestedFile.mime}});
-    databaseUtils.increaseViewCount(req.requestedFile.id, () => {
-    });
+    databaseUtils.increaseViewCount(req.requestedFile.id, () => {});
   });
 });
 
