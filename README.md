@@ -40,7 +40,7 @@ You also have to insert `proxy_set_header X-Forwarded-Proto https;` into your ng
 
 ##### Development Mode
 `DEBUG="yanius:*" NODE_ENV="development" node --harmony ./bin/www`
-> **WARNING:** Don't use this in production. Seriously. This mode show stacktraces to the user.
+> **WARNING:** Don't use this in production. Seriously. This mode shows stacktraces to the user.
 
 #### How To Upload Files
 ##### Linux
