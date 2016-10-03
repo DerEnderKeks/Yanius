@@ -15,7 +15,7 @@
 ```bash
 git clone https://github.com/DerEnderKeks/Yanius.git
 cd Yanius
-sudo apt-get install build-essentials
+sudo apt-get install build-essential
 npm install
 cp config/default.json.example config/default.json
 ```
