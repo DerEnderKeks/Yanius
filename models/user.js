@@ -7,7 +7,7 @@ var User = thinky.createModel("users", {
   email: type.string().email(),
   password: type.string(),
   apiKey: type.string(),
-  quotaUsed: type.number(),
+  quotaUsed: type.number().default(0),
   enabled: type.boolean().default(true),
   isAdmin: type.boolean().default(false)
 });

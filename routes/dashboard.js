@@ -7,6 +7,7 @@ var thinky = require(__dirname + '/../util/thinky.js');
 var r = thinky.r;
 var User = require(__dirname + '/../models/user.js');
 var config = require("config");
+var databaseUtils = require(__dirname + '/../util/database-utils.js');
 
 /**
  * PARAM username
@@ -27,7 +28,6 @@ router.param('username', function (req, res, next, param) {
  * GET Dashboard
  */
 router.get('/', sessionHandler.ensureAuthenticated, function (req, res, next) {
-  //res.render('dashboard/index', {title: 'Dashboard', user: req.user});
   res.redirect('/dashboard/files');
 });
 
@@ -56,12 +56,7 @@ router.get('/files/g', sessionHandler.ensureAuthenticated, sessionHandler.ensure
  * GET Dashboard - Files of single user
  */
 router.get('/files/:username', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
-  res.render('dashboard/files', {
-    title: 'Files of ' + req.user.username,
-    user: req.user,
-    apiUrl: '/api/files/' + req.searchedUser.username,
-    highlight: ''
-  });
+  res.render('dashboard/files', {title: 'Files of ' + req.searchedUser.username, user: req.user, apiUrl: '/api/files/' + req.searchedUser.username, highlight: ''});
 });
 
 /**
@@ -83,6 +78,16 @@ router.get('/user/:username', sessionHandler.ensureAuthenticated, sessionHandler
  */
 router.get('/account', sessionHandler.ensureAuthenticated, function (req, res, next) {
   res.render('dashboard/account', {title: 'Account', user: req.user, searchedUser: req.user});
+});
+
+/**
+ * GET Dashboard - Settings
+ */
+router.get('/settings', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/settings', {title: 'Settings', user: req.user, settings: result});
+  });
 });
 
 /**

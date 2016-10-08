@@ -11,7 +11,8 @@ var File = thinky.createModel("files", {
   ext: type.string(),
   hidden: type.boolean().default(false),
   timestamp: type.date(),
-  views: type.number()
+  views: type.number(),
+  size: type.number()
 });
 
 module.exports = File;

@@ -13,7 +13,7 @@ var deasync = require("deasync");
 var encryptionHandler = require(__dirname + '/util/encryption-handler.js');
 var thinky = require(__dirname + '/util/thinky.js');
 var r = thinky.r;
-var ConfigModel = require(__dirname + '/models/config.js');
+var databaseUtils = require(__dirname + '/util/database-utils.js');
 var RDBStore = require('session-rethinkdb')(session);
 var LocalStrategy = require('passport-local').Strategy;
 var LocalAPIKeyStrategy = require('passport-localapikey').Strategy;
@@ -25,9 +25,9 @@ var sessionStore = new RDBStore(r, {
   table: 'sessions'
 });
 
-var routes = require('./routes/index');
-var api = require('./routes/api');
-var dashboard = require('./routes/dashboard');
+var routes = require(__dirname + '/routes/index');
+var api = require(__dirname + '/routes/api');
+var dashboard = require(__dirname + '/routes/dashboard');
 
 var app = express();
 
@@ -39,19 +39,20 @@ deasync.loopWhile(() => {
   return !setupStatus;
 });
 
-ConfigModel.filter({key: 'sessionSecret'}).then(function (result) {
-  sessionSecret = result[0].value;
-}).error(function (err) {
-  console.err(err);
-  process.exit(1);
+databaseUtils.getSetting('sessionSecret', (error, result) => {
+  if (error) {
+    console.err(error);
+    process.exit(1);
+  }
+  sessionSecret = result;
 });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(function (req, res, next) {
-  res.removeHeader("x-powered-by"); // GO AWAY USELESS HEADER!
+  res.removeHeader("x-powered-by"); // GO AWAY USELESS HEADER! (╯°□°）╯︵ ┻━┻
   next();
 });
 
@@ -180,12 +181,12 @@ app.use(function (req, res, next) {
   next(err);
 });
 
-// error handler
+// Error handler
 
 
 if (process.env.NODE_ENV === 'development') {
   /*
-   * development error handler (will print stacktrace)
+   * Development error handler (will print stacktrace)
    */
   app.use(function (err, req, res, next) {
     if (res._header) return;
@@ -197,12 +198,13 @@ if (process.env.NODE_ENV === 'development') {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
-      error: err
+      error: err,
+      status: err.status
     });
   });
 } else {
   /*
-   * production error handler (no stacktraces leaked to user)
+   * Production error handler (no stacktraces leaked to user)
    */
   app.use(function (err, req, res, next) {
     if (res._header) return;
@@ -212,8 +214,9 @@ if (process.env.NODE_ENV === 'development') {
     }
     res.status(err.status || 500);
     res.render('error', {
-      message: err.message,
-      error: {}
+      message: 'Internal Server Error',
+      error: {},
+      status: err.status
     });
   });
 }

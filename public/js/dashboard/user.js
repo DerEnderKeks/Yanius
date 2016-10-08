@@ -3,7 +3,7 @@ var blockEdit = false;
 function editUser() {
   if (blockEdit) return;
   blockEdit = true;
-  var url = '/api/users/' + user.id;
+  var url = '/api/users/' + searchedUser.id;
   var data = {
     username: $('input[name=\'username\']').val(),
     email: $('input[name=\'email\']').val(),

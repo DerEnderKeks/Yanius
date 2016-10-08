@@ -12,13 +12,16 @@ var path = require('path');
 var config = require('config');
 var uploadPath = require(__dirname + '/../util/upload-path.js');
 var databaseUtils = require(__dirname + '/../util/database-utils.js');
+var genericUtils = require(__dirname + '/../util/generic-utils.js');
 var encryptionHandler = require(__dirname + '/../util/encryption-handler.js');
 var validator = require('validator');
 var fileType = require('file-type');
 var urlJoin = require('url-join');
 var mime = require('mime');
 var hat = require('hat');
+var multer = require('multer');
 var debug = require('debug')('yanius:api');
+var readChunk = require('read-chunk');
 
 
 function ensurePermitted(req, res, next) {
@@ -174,6 +177,23 @@ router.post('/users/new', sessionHandler.ensureAuthenticated, ensureAdminOnly, f
   });
 });
 
+/**
+ * POST API - update settings
+ */
+router.post('/settings', sessionHandler.ensureAuthenticated, ensureAdminOnly, function (req, res, next) {
+  let settings = {};
+  settings.id = 1;
+  settings.maxFileSize = req.body.maxFileSize;
+  settings.maxQuota = req.body.maxQuota;
+  settings.mimeList = req.body.mimeList;
+  settings.mimeListType = req.body.mimeListType;
+
+  databaseUtils.updateSettings(settings, function (error, result) {
+    if (error) return end(res, 500, 'Could not save settings');
+    return end(res, 200, 'Settings saved');
+  })
+});
+
 router.post('/users/:userId', sessionHandler.ensureAuthenticated, ensurePermitted, function (req, res, next) {
   var user = {};
   user.id = req.searchedUser.id;
@@ -204,51 +224,63 @@ router.post('/users/:userId', sessionHandler.ensureAuthenticated, ensurePermitte
 /**
  * POST API - Upload
  */
-router.use(fileUpload());
-router.post('/upload', sessionHandler.authenticateAPIKey, function (req, res, next) {
+var multerStorage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, uploadPath)
+  },
+  filename: function (req, file, callback) {
+    callback(null, uid.sync(50))
+  }
+});
+
+router.post('/upload', multer({storage: multerStorage}).single('file'), sessionHandler.authenticateAPIKey, function (req, res, next) {
   var file;
 
-  if (!req.files || !req.files.file) {
+  if (!req.file) {
     return end(res, 400, 'No file provided');
   }
 
-  file = req.files.file;
+  file = req.file;
 
-  let mimeInfo = fileType(file.data);
-  if (!mimeInfo) mimeInfo = {ext: mime.extension(mime.lookup(file.name)), mime: mime.lookup(file.name)};
-  if (mimeInfo.ext === 'bin') mimeInfo.ext = path.extname(file.name);
+  let fileBuffer = readChunk.sync(file.path, 0, 262);
+  let mimeInfo = fileType(fileBuffer);
+  if (!mimeInfo) mimeInfo = {
+    mime: 'application/octet-stream',
+    ext: ''
+  };
+  if (mimeInfo.ext === 'bin') mimeInfo.ext = path.extname(file.originalname);
   if (mimeInfo.ext.charAt(0) === '.') mimeInfo.ext = mimeInfo.ext.substr(1);
 
+
   var newFile = {
-    fileId: uid.sync(50),
-    originalName: file.name,
+    fileId: file.filename,
+    originalName: file.originalname,
     mime: mimeInfo.mime,
     ext: mimeInfo.ext,
     timestamp: new Date(),
     hidden: req.body.hidden == 'true',
     uploaderId: req.user.id,
-    views: 0
+    views: 0,
+    size: file.size
   };
 
-  file.mv(path.join(uploadPath, newFile.fileId), function (err) {
-    if (err) {
-      debug(err);
-      return end(res, 500, 'Upload failed');
-    } else {
-      let generateShortname = () => {
-        let shortName = uid.sync(6);
-        databaseUtils.getFile(shortName, function (error, result) {
+  genericUtils.checkUploadRestriction(newFile, req.user, (error, result, message) => {
+    if (error) return end(res, 500, 'Upload failed');
+    if (result !== true) return end(res, 403, message);
+
+    let generateShortname = () => {
+      let shortName = uid.sync(6);
+      databaseUtils.getFile(shortName, function (error, result) {
+        if (error) return end(res, 500, 'Upload failed');
+        if (result) return generateShortname();
+        newFile.shortName = shortName;
+        databaseUtils.addFile(newFile, function (error, result) {
           if (error) return end(res, 500, 'Upload failed');
-          if (result) return generateShortname();
-          newFile.shortName = shortName;
-          databaseUtils.addFile(newFile, function (error, result) {
-            if (error) return end(res, 500, 'Upload failed');
-            return end(res, 201, 'File uploaded', {url: urlJoin(config.get('url'), result.ext ? result.shortName + '.' + result.ext : result.shortName)});
-          });
+          return end(res, 201, 'File uploaded', {url: urlJoin(config.get('url'), result.ext ? result.shortName + '.' + result.ext : result.shortName)});
         });
-      };
-      generateShortname();
-    }
+      });
+    };
+    generateShortname();
   });
 });
 

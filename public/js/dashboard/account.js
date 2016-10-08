@@ -49,3 +49,5 @@ function editUser() {
     blockEdit = false;
   }, 2000);
 }
+
+$('#account').addClass('active');

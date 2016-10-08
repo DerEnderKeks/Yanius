@@ -1,4 +1,4 @@
-extends ./index
+extends index
 
 block innerContent
   div#content
@@ -9,11 +9,11 @@ block innerContent
         form.col.s12
           .row
             .col.s12.input-field
-              input#username.validate(type='text', name='username', pattern='^[a-zA-Z0-9_]{4,24}$', value=user.username)
+              input#username.validate(type='text', name='username', pattern='^[a-zA-Z0-9_]{4,24}$', value=searchedUser.username)
               label(for='username') Username
           .row
             .col.s12.input-field
-              input#email.validate(type='email', name='email', value=user.email)
+              input#email.validate(type='email', name='email', value=searchedUser.email)
               label(for='email') Email
           .row
             .col.s12.input-field
@@ -23,14 +23,14 @@ block innerContent
             .col.s12.m3.input-field
               .switch
                 label Enabled
-                  input(type='checkbox', name='enabled', checked=user.enabled)
+                  input(type='checkbox', name='enabled', checked=searchedUser.enabled)
                   span.lever
             br.hide-on-med-and-up
             br.hide-on-med-and-up
             .col.s12.m3.input-field
               .switch
                 label Admin
-                  input(type='checkbox', name='isAdmin', checked=user.isAdmin)
+                  input(type='checkbox', name='isAdmin', checked=searchedUser.isAdmin)
                   span.lever
             br
             .col.right
@@ -41,5 +41,5 @@ block innerContent
 
 block scripts
   script.
-    window.user = {id: '#{user.id}'}
+    window.searchedUser = {id: '#{searchedUser.id}'}
   script(type='text/javascript' src='/js/dashboard/user.js')

@@ -106,6 +106,12 @@ function addUser(confirm) { // TODO add user to list
       Materialize.toast(response.message, 5000);
       count = 0;
       $('#userlist').html('');
+      $('#username').val('').removeClass('valid').removeClass('invalid');
+      $('#email').val('').removeClass('valid').removeClass('invalid');
+      $('#password').val('').removeClass('valid').removeClass('invalid');
+      $('#userEnabled').prop('checked', true);
+      $('#userAdmin').prop('checked', false);
+      Materialize.updateTextFields();
       loadMore(true);
     });
   } else {

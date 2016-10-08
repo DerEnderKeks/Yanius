@@ -12,49 +12,41 @@ module.exports = function (callback) {
   var encryptionHandler = require(__dirname + '/../util/encryption-handler.js');
   var deasync = require('deasync');
 
-  var ConfigModel = require(__dirname + '/../models/config.js');
-
   mkdirp(uploadPath, function (err) {
-    if (err) throw (err);
+    if (err) throw err;
   });
   mkdirp(__dirname + '/../cache', function (err) {
     if (err) throw err;
   });
 
   var defaultConfig = {
+    id: 1,
     encryptionSecret: hat(256),
     sessionSecret: hat(256),
-    registrationEnabled: false
+    maxFileSize: 1e+7,
+    maxQuota: 1e+8,
+    mimeList: [],
+    mimeListType: true
   };
-
-  for (var key in defaultConfig) {
-    (function (key) {
-      ConfigModel.filter({key: key}).then(function (result) {
-        if (result.length === 0) {
-          ConfigModel.save({key: key, value: defaultConfig[key]})
-            .then(function (res) {
-              defaultConfig[key] = 'done';
-              debug('Inserted default config value for \'' + key + '\'');
-            })
-            .error(function (err) {
-              console.err('Failed to insert default config value for \'' + key + '\'\n' + err)
-            });
-        } else {
-          defaultConfig[key] = 'done';
-        }
-      })
-    })(key)
-  }
+  let configSaved = false;
+  databaseUtils.getSetting('id', (error, result) => {
+    if (!error || result) {
+      configSaved = true;
+      return;
+    }
+    debug('Created default config');
+    databaseUtils.setSettings(defaultConfig, (error, result) => {
+      if (error) throw error;
+      configSaved = true;
+    });
+  });
 
   // THIS IS VERY HACKY. I KNOW. JUST DON'T LOOK AT IT.
   deasync.loopWhile(() => {
-    return defaultConfig.encryptionSecret !== 'done';
-  });
-  encryptionHandler.init();
-  deasync.loopWhile(() => {
-    return defaultConfig.sessionSecret !== 'done';
+    return !configSaved;
   });
 
+  encryptionHandler.init();
 
   databaseUtils.getUsers(0, 1, (error, result) => {
     if (error) return;
@@ -69,8 +61,8 @@ module.exports = function (callback) {
       apiKey: ''
     };
     databaseUtils.addUser(user, (error, result) => {
-      if (error) return debug('could not create default user');
-      return debug('created default user');
+      if (error) return debug('Could not create default user');
+      return debug('Created default user (username: admin, password: 12345678)');
     });
   });
 

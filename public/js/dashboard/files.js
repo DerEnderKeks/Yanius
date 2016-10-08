@@ -59,9 +59,9 @@ function loadFiles() {
   let url = window.fileAPIurl + '?index=' + count + '&max=25';
   $.ajax({
     url: url
-  }).done(function (data) {
+  }).done((data) => {
     if (Object.prototype.toString.call(data) !== '[object Array]') return;
-    data.forEach(function (element) {
+    data.forEach((element) => {
       count++;
       files.push(element);
       appendFile(element);
@@ -75,7 +75,7 @@ function loadMore(force) {
   blockUpdate = true;
   showLoader();
   loadFiles();
-  setTimeout(function () {
+  setTimeout(() => {
     blockUpdate = false;
   }, 2000);
 }
@@ -87,7 +87,7 @@ function deleteFile(id, confirm) {
     $.ajax({
       url: url,
       type: 'DELETE'
-    }).done(function (response) {
+    }).done((response) => {
       Materialize.toast(response.message, 5000);
       count = 0;
       $('#filelist').html('');
@@ -107,7 +107,7 @@ function deleteFile(id, confirm) {
 }
 
 function findById(id) {
-  return files.find(function (file) {
+  return files.find((file) => {
     return file.id === id;
   });
 }

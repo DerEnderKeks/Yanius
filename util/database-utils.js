@@ -1,7 +1,9 @@
 var thinky = require(__dirname + '/../util/thinky.js');
+var Errors = thinky.Errors;
 var r = thinky.r;
 var User = require(__dirname + '/../models/user.js');
 var File = require(__dirname + '/../models/file.js');
+var Config = require(__dirname + '/../models/config.js');
 var uploadPath = require(__dirname + '/../util/upload-path.js');
 var fs = require('fs');
 var path = require('path');
@@ -61,11 +63,15 @@ exports.getFilesWithUser = function (startIndex, max, callback) {
 };
 
 exports.deleteFile = function (id, callback) {
-  File.get(id).then(function (result) {
-    fs.unlink(path.join(uploadPath, result.fileId), (error) => {
+  File.get(id).then(function (file) {
+    fs.unlink(path.join(uploadPath, file.fileId), (error) => {
       if (error) return callback(error, null);
       File.get(id).delete().then(function (result) {
-        return callback(null, result);
+        User.get(file.uploaderId).update({quotaUsed: r.row("quotaUsed").sub(file.size)}).then(function (result) {
+          return callback(null, result);
+        }).error(function (error) {
+          return callback(error, null);
+        });
       }).error(function (error) {
         return callback(error, null);
       });
@@ -166,9 +172,13 @@ exports.addUser = function (user, callback) {
 };
 
 exports.addFile = function (file, callback) {
-  var newUser = new File(file);
-  newUser.save().then(function (result) {
-    return callback(null, result);
+  var newFile = new File(file);
+  newFile.save().then(function (result) {
+    User.get(file.uploaderId).update({quotaUsed: r.row("quotaUsed").add(file.size)}).then(function (result) {
+      return callback(null, file);
+    }).error(function (error) {
+      return callback(error, null);
+    });
   }).error(function (error) {
     return callback(error, null);
   });
@@ -196,4 +206,44 @@ exports.getFileById = function (id, callback) {
   }).error(function (error) {
     return callback(error, null);
   });
+};
+
+exports.getSettings = function (callback) {
+  Config.get(1).then((result) => {
+    return callback(null, result);
+  }).catch(Errors.DocumentNotFound, (error) => {
+    return callback(error, null);
+  }).error((error) => {
+    return callback(error, null);
+  });
+};
+
+exports.getSetting = function (setting, callback) {
+  Config.get(1).then((result) => {
+    return callback(null, result[setting]);
+  }).catch(Errors.DocumentNotFound, (error) => {
+    return callback(error, null);
+  }).error((error) => {
+    return callback(error, null);
+  });
+};
+
+exports.setSettings = function (settings, callback) {
+  Config.delete().then(() => {
+    settings.id = 1;
+    let newConfig = new Config(settings);
+    newConfig.save(settings).then((result) => {
+      return callback(null, result);
+    }).error((error) => {
+      return callback(error, null);
+    })
+  })
+};
+
+exports.updateSettings = function (settings, callback) {
+  Config.get(1).update(settings).then((result) => {
+    return callback(null, result);
+  }).error((error) => {
+    return callback(error, null);
+  })
 };

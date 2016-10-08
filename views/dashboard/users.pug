@@ -1,4 +1,4 @@
-extends ./index
+extends index
 
 block innerContent
   div#loader(style='z-index: 999999')
@@ -62,13 +62,13 @@ block innerContent
               .input-field.col.s12.m3
                 .switch
                   label Enabled
-                    input(type='checkbox', name='enabled', checked=true)
+                    input#userEnabled(type='checkbox', name='enabled', checked=true)
                     span.lever
               br.hide-on-med-and-up
               .input-field.col.s12.m3
                 .switch
                   label Admin
-                    input(type='checkbox', name='isAdmin', checked=false)
+                    input#userAdmin(type='checkbox', name='isAdmin', checked=false)
                     span.lever
       .modal-footer#modalfooter
         a.modal-action.modal-close.waves-effect.waves-light.btn-flat Cancel

@@ -1,4 +1,4 @@
-# Yanius
+# Yanius ![Version](https://img.shields.io/badge/Version-1.0.0-green.svg?style=flat-square)
 *Yet Another Node Image Upload Server*
 
 *(The name is actually a lie. You can upload every file type.)*
@@ -21,6 +21,16 @@ cp config/default.json.example config/default.json
 ```
 
 > Make a PR if you know how to install this on other systems
+
+#### Updating
+As long the `Major` part of the version number (`Major.Minor.Patch`) didn't change, you can update using `git pull`.
+Otherwise you have to execute the appropriate migration scripts. You can find them in `/scripts/migration/`.
+
+##### Example
+To update from 0.0.0 to 1.0.0 you have to:
+
+* execute `node ./scripts/migration/0_0_0-to-1_0_0.js`
+* pray to a god of your choice
 
 #### Configuration
 Edit `config/default.json`.
@@ -63,8 +73,8 @@ In ShareX
 ##### General
 If you want to make your own script/program to upload files make sure it does the following:
 
-- `POST` request to `your.domain/api/upload`
-- Form field `apikey` is set to your API Key (Get it from `your.domain/dashboard/account`)
+- `POST` request to `/api/upload`
+- Form field `apikey` is set to your API Key (Get it from `/dashboard/account`)
 - Form field `file` is set to the file you want to upload
 - (Optional) Form field `hidden` is set to `true` or `false` (if a file is hidden nobody can download it)
 

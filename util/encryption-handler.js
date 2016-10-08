@@ -1,7 +1,7 @@
 'use strict';
 
 var thinky = require(__dirname + '/../util/thinky.js');
-var ConfigModel = require(__dirname + '/../models/config.js');
+var databaseUtils = require(__dirname + '/../util/database-utils.js');
 var bcrypt = require('bcrypt');
 var config = require('config');
 var crypto = require('crypto');
@@ -10,11 +10,12 @@ var deasync = require('deasync');
 var encryptionKey = null;
 
 exports.init = function () {
-  ConfigModel.filter({key: 'encryptionSecret'}).then(function (result) {
-    encryptionKey = result[0].value;
-  }).error(function (err) {
-    console.err(err);
-    process.exit(1);
+  databaseUtils.getSetting('encryptionSecret', (error, result) => {
+    if (error) {
+      console.err(error);
+      process.exit(1);
+    }
+    encryptionKey = result;
   });
   deasync.loopWhile(function () {
     return !encryptionKey
