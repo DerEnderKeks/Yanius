@@ -24,7 +24,7 @@ cp config/default.json.example config/default.json
 
 #### Updating
 As long the `Major` part of the version number (`Major.Minor.Patch`) didn't change, you can update using `git pull`.
-Otherwise you have to execute the appropriate migration scripts. You can find them in `/scripts/migration/`.
+Otherwise you also have to execute the appropriate migration scripts. You can find them in `/scripts/migration/`.
 
 ##### Example
 To update from 0.0.0 to 1.0.0 you have to:
