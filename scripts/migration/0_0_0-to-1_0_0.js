@@ -50,7 +50,7 @@ var saveNewConfig = () => {
   }
   settings.maxFileSize = 1e+7;
   settings.maxQuota = 1e+8;
-  settings.mimeList = '';
+  settings.mimeList = [];
   settings.mimeListType = true;
   console.log('Saving new config...');
   var newConfig = new Config(settings);
