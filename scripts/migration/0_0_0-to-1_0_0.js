@@ -60,14 +60,26 @@ var saveNewConfig = () => {
     r.db(config.get('dbConfig.dbName')).table('config').filter((arg) => {
       return r.not(arg('id').eq(1));
     }).delete().then((result) => {
-      console.log('Done!');
-      process.exit(0);
+      console.log('Saving new config: Done!');
+      migrateUsers();
     })
   }).error((error) => {
     console.log(error);
     console.log('ERROR: Could not save config! Aborting.');
     process.exit(1);
   });
+};
+
+var migrateUsers = () => {
+  console.log('Migrating users...');
+  r.db(config.get('dbConfig.dbName')).table('users').update({quotaUsed: 0}).then((result) => {
+    console.log('Migrating users: Done!');
+    process.exit(0);
+  }).error((error) =>{
+    console.log(error);
+    console.log('ERROR: Could not migrate users! Aborting.');
+    process.exit(1);
+  })
 };
 
 checkStatus();
