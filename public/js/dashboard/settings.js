@@ -93,8 +93,6 @@ $('#mimelist').val(arrayToStringWithNewlines(settings.mimeList)).keyup(() => {
   settings.mimeList = $('#mimelist').val().split('\n');
 });
 
-Materialize.updateTextFields();
-
 maxfilesizeslider[0].noUiSlider.on('update', (value) => {
   $('#maxfilesize').text(value);
 });
