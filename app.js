@@ -19,6 +19,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var LocalAPIKeyStrategy = require('passport-localapikey').Strategy;
 var RememberMeStrategy = require('passport-remember-me').Strategy;
 var sessionHandler = require(__dirname + '/util/session-handler.js');
+var HttpStatus = require('http-status-codes');
 
 var sessionStore = new RDBStore(r, {
   browserSessionsMaxAge: 5000,
@@ -214,7 +215,7 @@ if (process.env.NODE_ENV === 'development') {
     }
     res.status(err.status || 500);
     res.render('error', {
-      message: 'Internal Server Error',
+      message: HttpStatus.getStatusText(res.statusCode),
       error: {},
       status: err.status
     });

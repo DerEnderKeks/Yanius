@@ -35,8 +35,9 @@ router.get('/', function (req, res, next) {
  */
 router.get('/:shortname', function (req, res, next) {
   if (!req.requestedFile || req.requestedFile.hidden) {
-    res.status(404);
-    return res.json({message: 'Not Found'});
+    let error = new Error('File not found');
+    error.status = 404;
+    return next(error);
   }
 
   let filePath = path.join(uploadPath, req.requestedFile.fileId);
