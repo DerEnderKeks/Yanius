@@ -21,31 +21,31 @@ block content
       li
         .userView
           .background.purple.darken-3
-          - var settingsUrl = '/dashboard/account'
+          - var settingsUrl = 'account'
           a(href='#{settingsUrl}')
-            img.circle(src='/images/favicon.svg')
+            img.circle(src='../images/favicon.svg')
           a.white-text.truncate.name(href='#{settingsUrl}') #{user.username}
           a.white-text.truncate.email(href='#{settingsUrl}') #{user.email}
       li#files
-        a.blue-grey-text(href='/dashboard/files') Files
+        a.blue-grey-text(href='files') Files
           i.material-icons folder
       if user.isAdmin == true
         li.divider
         li#users
-          a.blue-grey-text(href='/dashboard/users') Users
+          a.blue-grey-text(href='users') Users
             i.material-icons people
         li#allfiles
-          a.blue-grey-text(href='/dashboard/files/g') All Files
+          a.blue-grey-text(href='files?g=1') All Files
             i.material-icons folder
         li#settings
-          a.blue-grey-text(href='/dashboard/settings') Settings
+          a.blue-grey-text(href='settings') Settings
             i.material-icons settings
       li.divider
       li#account
-        a.blue-grey-text(href='/dashboard/account') Account
+        a.blue-grey-text(href='account') Account
           i.material-icons account_circle
       li#logout
-        a.blue-grey-text(href='/dashboard/logout') Logout
+        a.blue-grey-text(href='logout') Logout
           i.material-icons exit_to_app
       div(style='position: absolute; top: 100vh; transform: translateY(-75px); width: 100%')
         li.divider
@@ -76,8 +76,8 @@ block scripts
     window.settings = {
       maxQuota: Number.parseInt('#{settings.maxQuota}')
     }
-  script(type='text/javascript' src='/js/global.js')
-  script(type='text/javascript' src='/js/init.js')
+  script(type='text/javascript' src='../js/global.js')
+  script(type='text/javascript' src='../js/init.js')
   - if (messages.error)
     script.
       $('#error').openModal();

@@ -38,29 +38,28 @@ router.get('/login', function (req, res, next) {
 });
 
 /**
- * GET Dashboard - User Files
+ * GET Dashboard - Files
  */
 router.get('/files', sessionHandler.ensureAuthenticated, function (req, res, next) {
-  databaseUtils.getSettings((err, result) => {
-    if (err) return next(Error(500));
-    res.render('dashboard/files', {
-      title: 'Your Files',
-      user: req.user,
-      apiUrl: '/api/files/me',
-      highlight: '#files',
-      settings: result
+  if (!req.query.g) {
+    databaseUtils.getSettings((err, result) => {
+      if (err) return next(Error(500));
+      res.render('dashboard/files', {
+        title: 'Your Files',
+        user: req.user,
+        apiUrl: '/api/files/me',
+        highlight: '#files',
+        settings: result
+      });
     });
-  });
-});
-
-/**
- * GET Dashboard - All Files
- */
-router.get('/files/g', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
-  databaseUtils.getSettings((err, result) => {
-    if (err) return next(Error(500));
-    res.render('dashboard/files', {title: 'Files', user: req.user, apiUrl: '/api/files', showUploader: true, highlight: '#allfiles', settings: result});
-  });
+  } else {
+    sessionHandler.ensureAdminOnly(req, res, () => {
+      databaseUtils.getSettings((err, result) => {
+        if (err) return next(Error(500));
+        res.render('dashboard/files', {title: 'Files', user: req.user, apiUrl: '/api/files', showUploader: true, highlight: '#allfiles', settings: result});
+      });
+    });
+  }
 });
 
 /**
