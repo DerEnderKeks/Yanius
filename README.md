@@ -1,4 +1,4 @@
-# Yanius [![Version](https://img.shields.io/badge/Version-1.0.3-green.svg?style=flat-square)](https://github.com/DerEnderKeks/Yanius/blob/master/package.json#L3)
+# Yanius [![Version](https://img.shields.io/badge/Version-1.0.4-green.svg?style=flat-square)](https://github.com/DerEnderKeks/Yanius/blob/master/package.json#L3)
 *Yet Another Node Image Upload Server*
 
 *(The name is actually a lie. You can upload every file type.)*

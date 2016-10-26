@@ -114,6 +114,16 @@ router.get('/settings', sessionHandler.ensureAuthenticated, sessionHandler.ensur
 });
 
 /**
+ * GET Dashboard - Help
+ */
+router.get('/help', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/help', {title: 'Help', user: req.user, settings: result});
+  });
+});
+
+/**
  * POST Dashboard - Login
  */
 router.post('/login',
