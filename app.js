@@ -217,7 +217,8 @@ if (process.env.NODE_ENV === 'development') {
     res.render('error', {
       message: HttpStatus.getStatusText(res.statusCode),
       error: {},
-      status: err.status
+      status: err.status,
+      title: HttpStatus.getStatusText(res.statusCode)
     });
   });
 }
