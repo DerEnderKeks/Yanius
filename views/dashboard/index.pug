@@ -47,6 +47,19 @@ block content
       li#logout
         a.blue-grey-text(href='/dashboard/logout') Logout
           i.material-icons exit_to_app
+      div(style='position: absolute; top: 100vh; transform: translateY(-75px); width: 100%')
+        li.divider
+        li#quotaInfo(style='margin-top: 7px')
+          .row
+            .col.s3
+                div#quotaCircle
+            .col.s9
+              p.blue-grey-text(style='margin: 0; line-height: 1.5') Quota used:
+              p.blue-grey-text(style='margin: 0; line-height: 1.5')
+                span#quotaUsedTextElement 0 B
+                span /
+                span#maxQuotaTextElement 0 B
+
     .navbar-fixed.hide-on-large-only
       nav
         .nav-wrapper
@@ -57,6 +70,14 @@ block content
   main
     block innerContent
 block scripts
+  script.
+    window.user = window.user || {};
+    window.user.quotaUsed = Number.parseInt('#{user.quotaUsed}');
+    window.settings = {
+      maxQuota: Number.parseInt('#{settings.maxQuota}')
+    }
+  script(type='text/javascript' src='/js/global.js')
+  script(type='text/javascript' src='/js/init.js')
   - if (messages.error)
     script.
       $('#error').openModal();

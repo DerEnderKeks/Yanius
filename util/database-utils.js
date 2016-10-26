@@ -25,6 +25,22 @@ exports.getFilesForUser = function (id, startIndex, max, callback) {
 };
 
 /**
+/**
+ * Get file list for a specific user
+ * @param id Target user
+ * @param callback callback
+ * @return int file count
+ *
+exports.countFilesForUser = function (id, callback) {
+  File.orderBy({index: r.desc("timestamp")}).filter({uploaderId: id}).then((result) => {
+    return callback(null, result.size);
+  }).error((error) => {
+    return callback(error, null);
+  });
+};
+*/
+
+/**
  * Get all files
  * @param startIndex startIndex
  * @param max max
@@ -104,7 +120,11 @@ exports.editFile = function (file, callback) {
  * @param callback callback
  */
 exports.getUsers = function (startIndex, max, callback) {
-  User.orderBy({index: r.asc("username")}).skip(startIndex).limit(max).then(function (result) {
+  User.orderBy({index: r.asc("username")}).getJoin({files: true}).skip(startIndex).limit(max).then(function (result) {
+    result.map((element) => {
+      element.fileCount = element.files.length;
+      element.files = undefined;
+    });
     return callback(null, result);
   }).error(function (error) {
     return callback(error, null);
@@ -134,8 +154,10 @@ exports.editUser = function (user, callback) {
 };
 
 exports.getUserById = function (id, callback) {
-  User.get(id).then(function (result) {
+  User.get(id).getJoin({files: true}).then(function (result) {
     if (!result) return callback(new Error(404), null);
+    result.fileCount = result.files.length;
+    result.files = undefined;
     return callback(null, result);
   }).error(function (error) {
     return callback(error, null);

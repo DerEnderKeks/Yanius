@@ -21,7 +21,7 @@ function appendFile(file) {
       '<span class="title blue-grey-text">' + file.uploader.username + '</span>' : '') +
       '<span class="grey-text"> (' + file.mime + ') </span>' +
       '<p class="grey-text">' + moment(file.timestamp).tz(timezone).format('l LTS') + '</p>' +
-      '<p class="grey-text">' + file.views + ' Views</p>' +
+      '<p class="grey-text">Views: ' + file.views + ' Size: ' + formatFromBytes(file.size) + '</p>' +
       '<div class="secondary-content">' +
         '<a class="pointer" onclick="deleteFile(\'' + file.id + '\', false)">' +
           '<i class="material-icons red-text">delete</i>' +

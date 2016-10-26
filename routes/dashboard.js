@@ -23,7 +23,6 @@ router.param('username', function (req, res, next, param) {
   });
 });
 
-
 /**
  * GET Dashboard
  */
@@ -42,42 +41,67 @@ router.get('/login', function (req, res, next) {
  * GET Dashboard - User Files
  */
 router.get('/files', sessionHandler.ensureAuthenticated, function (req, res, next) {
-  res.render('dashboard/files', {title: 'Your Files', user: req.user, apiUrl: '/api/files/me', highlight: '#files'});
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/files', {
+      title: 'Your Files',
+      user: req.user,
+      apiUrl: '/api/files/me',
+      highlight: '#files',
+      settings: result
+    });
+  });
 });
 
 /**
  * GET Dashboard - All Files
  */
 router.get('/files/g', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
-  res.render('dashboard/files', {title: 'Files', user: req.user, apiUrl: '/api/files', showUploader: true, highlight: '#allfiles'});
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/files', {title: 'Files', user: req.user, apiUrl: '/api/files', showUploader: true, highlight: '#allfiles', settings: result});
+  });
 });
 
 /**
  * GET Dashboard - Files of single user
  */
 router.get('/files/:username', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
-  res.render('dashboard/files', {title: 'Files of ' + req.searchedUser.username, user: req.user, apiUrl: '/api/files/' + req.searchedUser.username, highlight: ''});
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/files',
+      {title: 'Files of ' + req.searchedUser.username, user: req.user, apiUrl: '/api/files/' + req.searchedUser.username, highlight: '', settings: result});
+  });
 });
 
 /**
  * GET Dashboard - Users
  */
 router.get('/users', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
-  res.render('dashboard/users', {title: 'Users', user: req.user});
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/users', {title: 'Users', user: req.user, settings: result});
+  });
 });
 
 /**
  * GET Dashboard - User
  */
 router.get('/user/:username', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
-  res.render('dashboard/user', {title: 'User', user: req.user, searchedUser: req.searchedUser});
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/user', {title: 'User', user: req.user, searchedUser: req.searchedUser, settings: result});
+  });
 });
 
 /**
  * GET Dashboard - Account
  */
 router.get('/account', sessionHandler.ensureAuthenticated, function (req, res, next) {
-  res.render('dashboard/account', {title: 'Account', user: req.user, searchedUser: req.user});
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/account', {title: 'Account', user: req.user, searchedUser: req.user, settings: result});
+  });
 });
 
 /**
@@ -103,7 +127,12 @@ router.post('/login',
       if (err) {
         return next(err);
       }
-      res.cookie('remember_me', token, {path: '/', httpOnly: true, maxAge: 604800000, secure: config.get('httpsSupport')});
+      res.cookie('remember_me', token, {
+        path: '/',
+        httpOnly: true,
+        maxAge: 604800000,
+        secure: config.get('httpsSupport')
+      });
       return next();
     });
   },

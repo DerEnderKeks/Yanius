@@ -17,6 +17,7 @@ function appendUser(user) {
     '<i class="material-icons circle teal darken-3">person</i>' +
     '<span class="title blue-grey-text">' + user.username + adminBadge + '</span>' +
     '<p class="email grey-text">' + user.email + '</p>' +
+    '<p class="email grey-text"> Quota used: ' + formatFromBytes(user.quotaUsed) + ' Files: ' + user.fileCount + '</p>' +
     '<div class="secondary-content">' +
     '<a class="pointer" onclick="deleteUser(\'' + user.id + '\', false)">' +
     '<i class="material-icons red-text">delete</i></a>' +
@@ -80,7 +81,7 @@ function deleteUser(id, confirm) {
   }
 }
 
-function addUser(confirm) { // TODO add user to list
+function addUser(confirm) {
   if (confirm) {
     let url = '/api/users/new';
     let data = {

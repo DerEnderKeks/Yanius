@@ -50,7 +50,7 @@ function createSilder() {
     format: {
       to: function (value) {
         settings.maxFileSize = value;
-        return formatFromBytes(value, 1);
+        return formatFromBytes(value);
       },
       from: function ( value ) {
         return value;
@@ -69,7 +69,7 @@ function createSilder() {
   sliderSettings.format = {
     to: function (value) {
       settings.maxQuota = value;
-      return formatFromBytes(value, 1);
+      return formatFromBytes(value);
     },
     from: function ( value ) {
       return value;
