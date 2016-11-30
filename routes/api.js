@@ -322,10 +322,10 @@ router.post('/upload', multer({storage: multerStorage}).single('file'), sessionH
         databaseUtils.addFile(newFile, function (error, result) {
           if (error) return end(res, 500, 'Upload failed');
           databaseUtils.logEvent('file_upload', req.user ? req.user.id : null, req.ip, {
-            originalName: req.requestedFile.originalName,
-            shortName: req.requestedFile.shortName,
-            mime: req.requestedFile.mime,
-            size: req.requestedFile.size
+            originalName: newFile.originalName,
+            shortName: newFile.shortName,
+            mime: newFile.mime,
+            size: newFile.size
           }, () => {});
           return end(res, 201, 'File uploaded', {url: urlJoin(config.get('url'), result.ext ? result.shortName + '.' + result.ext : result.shortName)});
         });
