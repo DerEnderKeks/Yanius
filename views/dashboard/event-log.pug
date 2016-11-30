@@ -39,8 +39,10 @@ block innerContent
     .row
       .col.s10.offset-s1
         br
-        h3.blue-grey-text= title
-        ul.collection#filelist
+        h3.blue-grey-text Event Log
+
+        ul.collapsible#eventlogCollection
+
         .row
           .col
             a.waves-effect.waves-light.btn(onclick='loadMore()') Load more
@@ -54,10 +56,7 @@ block innerContent
                 .circle-clipper.right
                   .circle
 block scripts2
-  script(type='text/javascript').
-    $('#{highlight}').addClass('active');
-    window.fileAPIurl = '#{apiUrl}';
-    window.showUploader = '#{showUploader}';
   script(type='text/javascript' src=url_prefix + '../js/vendor/moment.js')
   script(type='text/javascript' src=url_prefix + '../js/vendor/moment-timezone.js')
-  script(type='text/javascript' src=url_prefix + '../js/dashboard/files.js')
+  script(type='text/javascript' src=url_prefix + '../js/dashboard/dictionaries.js')
+  script(type='text/javascript' src=url_prefix + '../js/dashboard/event-log.js')

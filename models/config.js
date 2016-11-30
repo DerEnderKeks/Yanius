@@ -1,7 +1,7 @@
-var thinky = require(__dirname + '/../util/thinky.js');
-var type = thinky.type;
+const thinky = require(__dirname + '/../util/thinky.js');
+const type = thinky.type;
 
-var Config = thinky.createModel("config", {
+const Config = thinky.createModel("config", {
   id: type.number(),
   encryptionSecret: type.string(),
   sessionSecret: type.string(),

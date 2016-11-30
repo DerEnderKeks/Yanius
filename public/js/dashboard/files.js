@@ -1,7 +1,7 @@
-var count = 0;
-var blockUpdate = false;
-var files = [];
-var timezone = moment.tz.guess();
+let count = 0;
+let blockUpdate = false;
+let files = [];
+const timezone = moment.tz.guess();
 moment.locale(window.navigator.language);
 
 function hideLoader() {
@@ -29,7 +29,7 @@ function appendFile(file) {
         '<a class="pointer" onclick="changeVisibility(\'' + file.id + '\', ' + !file.hidden + ')">' +
           '<i class="material-icons teal-text darken-3">' + (file.hidden ? 'visibility' : 'visibility_off') + '</i>' +
         '</a>' +
-        '<a class="pointer" target="_blank" href="/' + file.shortName + '">' +
+        '<a class="pointer" target="_blank" href="' + url_prefix + '../' + file.shortName + '">' +
           '<i class="material-icons teal-text darken-3">file_download</i>' +
         '</a>' +
       '</div>' +
@@ -38,7 +38,7 @@ function appendFile(file) {
 }
 
 function changeVisibility(fileId, hide) {
-  let url = '/api/file/' + fileId + '/visibility';
+  let url = url_prefix + '../api/file/' + fileId + '/visibility';
   $.ajax({
     url: url,
     type: 'POST',
@@ -83,7 +83,7 @@ function loadMore(force) {
 function deleteFile(id, confirm) {
   let file = findById(id);
   if (confirm) {
-    let url = '/api/file/' + id;
+    let url = url_prefix + '../api/file/' + id;
     $.ajax({
       url: url,
       type: 'DELETE'

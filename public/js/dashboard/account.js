@@ -1,6 +1,6 @@
-var blockEdit = false;
-var blockKey = false;
-var KeyHidden = true;
+let blockEdit = false;
+let blockKey = false;
+let KeyHidden = true;
 
 function showAPIKey() {
   if (!KeyHidden) return;
@@ -12,7 +12,7 @@ function showAPIKey() {
 function regenerateAPIKey() {
   if (blockKey) return;
   blockKey = true;
-  var url = '/api/regenerateAPIKey';
+  const url = '../api/regenerateAPIKey';
   $.ajax({
     url: url,
     type: 'GET'
@@ -31,8 +31,8 @@ function regenerateAPIKey() {
 function editUser() {
   if (blockEdit) return;
   blockEdit = true;
-  var url = '/api/users/' + user.id;
-  var data = {
+  const url = '../api/users/' + user.id;
+  let data = {
     email: $('input[name=\'email\']').val(),
     password: $('input[name=\'password\']').val()
   };

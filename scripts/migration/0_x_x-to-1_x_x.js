@@ -3,16 +3,16 @@
 
 process.chdir(__dirname + '/../../');
 
-var thinky = require(__dirname + '/../../util/thinky.js');
-var Config = require(__dirname + '/../../models/config.js');
-var config = require('config');
-var r = thinky.r;
+const thinky = require(__dirname + '/../../util/thinky.js');
+const Config = require(__dirname + '/../../models/config.js');
+const config = require('config');
+const r = thinky.r;
 
-var settings = {
+let settings = {
   id: 1
 };
 
-var checkStatus = () => {
+const checkStatus = () => {
   Config.filter({id: 1}).then(function (result) {
     if (!result || result.length < 1) {
       getOldConfig();
@@ -27,11 +27,11 @@ var checkStatus = () => {
   });
 };
 
-var getOldConfig = () => {
+const getOldConfig = () => {
   let oldKeys = ['sessionSecret', 'encryptionSecret'];
   let count = 0;
   console.log('Loading old config values...');
-  for (var key in oldKeys) {
+  for (let key in oldKeys) {
     (function (key) {
       r.db(config.get('dbConfig.dbName')).table('config').filter({key: oldKeys[key]}).then(function (result) {
         console.log('Loaded value for key \'' + oldKeys[key] + '\'.');
@@ -43,7 +43,7 @@ var getOldConfig = () => {
   }
 };
 
-var saveNewConfig = () => {
+const saveNewConfig = () => {
   if (Object.keys(settings).length < 2) {
     console.log('ERROR: Could not load all config values! Aborting.');
     process.exit(1);
@@ -53,7 +53,7 @@ var saveNewConfig = () => {
   settings.mimeList = [];
   settings.mimeListType = true;
   console.log('Saving new config...');
-  var newConfig = new Config(settings);
+  let newConfig = new Config(settings);
   newConfig.save().then((result) => {
     console.log('Config saved.');
     console.log('Deleting old values...');
@@ -70,7 +70,7 @@ var saveNewConfig = () => {
   });
 };
 
-var migrateUsers = () => {
+const migrateUsers = () => {
   console.log('Migrating users...');
   r.db(config.get('dbConfig.dbName')).table('users').update({quotaUsed: 0}).then((result) => {
     console.log('Migrating users: Done!');

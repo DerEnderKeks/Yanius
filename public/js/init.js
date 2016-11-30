@@ -1,9 +1,9 @@
 // Initialize collapse button
 $('.button-collapse').sideNav();
 
-var loadQuota = () => {
+const loadQuota = () => {
   let percentage = user.quotaUsed/settings.maxQuota || 0;
-  var bar = new ProgressBar.Circle('#quotaCircle', {
+  let bar = new ProgressBar.Circle('#quotaCircle', {
     color: '#6a1b9a',
     trailColor: '#f3f3f3',
     trailWidth: 1,

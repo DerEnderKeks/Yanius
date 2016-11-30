@@ -1,4 +1,4 @@
-extends ../layout
+extends layout
 
 block content
   // SideNav and Navbar
@@ -21,34 +21,37 @@ block content
       li
         .userView
           .background.purple.darken-3
-          - var settingsUrl = 'account'
-          a(href='#{settingsUrl}')
-            img.circle(src='../images/favicon.svg')
-          a.white-text.truncate.name(href='#{settingsUrl}') #{user.username}
-          a.white-text.truncate.email(href='#{settingsUrl}') #{user.email}
+          - var settingsUrl = url_prefix + 'account'
+          a(href=settingsUrl)
+            img.circle(src=url_prefix + '../images/favicon.svg')
+          a.white-text.truncate.name(href=settingsUrl) #{user.username}
+          a.white-text.truncate.email(href=settingsUrl) #{user.email}
       li#files
-        a.blue-grey-text(href='files') Files
+        a.blue-grey-text(href=url_prefix + 'files') Files
           i.material-icons folder
       if user.isAdmin == true
         li.divider
         li#users
-          a.blue-grey-text(href='users') Users
+          a.blue-grey-text(href=url_prefix + 'users') Users
             i.material-icons people
         li#allfiles
-          a.blue-grey-text(href='files?g=1') All Files
+          a.blue-grey-text(href=url_prefix + 'files/all') All Files
             i.material-icons folder
+        li#eventlog
+          a.blue-grey-text(href=url_prefix + 'eventlog') Event Log
+            i.material-icons event_note
         li#settings
-          a.blue-grey-text(href='settings') Settings
+          a.blue-grey-text(href=url_prefix + 'settings') Settings
             i.material-icons settings
       li.divider
       li#account
-        a.blue-grey-text(href='account') Account
+        a.blue-grey-text(href=url_prefix + 'account') Account
           i.material-icons account_circle
       li#help
-        a.blue-grey-text(href='help') Help
+        a.blue-grey-text(href=url_prefix + 'help') Help
           i.material-icons help
       li#logout
-        a.blue-grey-text(href='logout') Logout
+        a.blue-grey-text(href=url_prefix + 'logout') Logout
           i.material-icons exit_to_app
       div(style='position: absolute; top: 100vh; transform: translateY(-75px); width: 100%')
         li.divider
@@ -79,8 +82,9 @@ block scripts
     window.settings = {
       maxQuota: Number.parseInt('#{settings.maxQuota}')
     }
-  script(type='text/javascript' src='../js/global.js')
-  script(type='text/javascript' src='../js/init.js')
+    document.cookie = 'url_prefix=#{url_prefix}';
+  script(type='text/javascript' src=url_prefix + '../js/global.js')
+  script(type='text/javascript' src=url_prefix + '../js/init.js')
   - if (messages.error)
     script.
       $('#error').openModal();

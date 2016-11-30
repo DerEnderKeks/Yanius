@@ -1,27 +1,27 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
-var session = require('express-session');
-var sessionHandler = require(__dirname + '/../util/session-handler.js');
-var thinky = require(__dirname + '/../util/thinky.js');
-var r = thinky.r;
-var User = require(__dirname + '/../models/user.js');
-var fileUpload = require('express-fileupload');
-var uid = require("uid-safe");
-var path = require('path');
-var config = require('config');
-var uploadPath = require(__dirname + '/../util/upload-path.js');
-var databaseUtils = require(__dirname + '/../util/database-utils.js');
-var genericUtils = require(__dirname + '/../util/generic-utils.js');
-var encryptionHandler = require(__dirname + '/../util/encryption-handler.js');
-var validator = require('validator');
-var fileType = require('file-type');
-var urlJoin = require('url-join');
-var mime = require('mime');
-var hat = require('hat');
-var multer = require('multer');
-var debug = require('debug')('yanius:api');
-var readChunk = require('read-chunk');
+const express = require('express');
+const router = express.Router();
+const passport = require('passport');
+const session = require('express-session');
+const sessionHandler = require(__dirname + '/../util/session-handler.js');
+const thinky = require(__dirname + '/../util/thinky.js');
+const r = thinky.r;
+const User = require(__dirname + '/../models/user.js');
+const fileUpload = require('express-fileupload');
+const uid = require("uid-safe");
+const path = require('path');
+const config = require('config');
+const uploadPath = require(__dirname + '/../util/upload-path.js');
+const databaseUtils = require(__dirname + '/../util/database-utils.js');
+const genericUtils = require(__dirname + '/../util/generic-utils.js');
+const encryptionHandler = require(__dirname + '/../util/encryption-handler.js');
+const validator = require('validator');
+const fileType = require('file-type');
+const urlJoin = require('url-join');
+const mime = require('mime');
+const hat = require('hat');
+const multer = require('multer');
+const debug = require('debug')('yanius:api');
+const readChunk = require('read-chunk');
 
 
 function ensurePermitted(req, res, next) {
@@ -75,8 +75,8 @@ router.param('fileId', function (req, res, next, param) {
  * GET API - files of user
  */
 router.get('/files/:username', sessionHandler.ensureAuthenticated, ensurePermitted, function (req, res, next) {
-  var index = req.query.index ? parseInt(req.query.index) : 0;
-  var max = req.query.max ? parseInt(req.query.max) : 25;
+  let index = req.query.index ? parseInt(req.query.index) : 0;
+  let max = req.query.max ? parseInt(req.query.max) : 25;
   databaseUtils.getFilesForUser(req.searchedUser.id, index, max, (error, result) => {
     if (error) return next(error);
     return res.json(result);
@@ -87,8 +87,8 @@ router.get('/files/:username', sessionHandler.ensureAuthenticated, ensurePermitt
  * GET API - files
  */
 router.get('/files', sessionHandler.ensureAuthenticated, ensureAdminOnly, function (req, res, next) {
-  var index = req.query.index ? parseInt(req.query.index) : 0;
-  var max = req.query.max ? parseInt(req.query.max) : 25;
+  let index = req.query.index ? parseInt(req.query.index) : 0;
+  let max = req.query.max ? parseInt(req.query.max) : 25;
   databaseUtils.getFilesWithUser(index, max, (error, result) => {
     if (error) return next(error);
     return res.json(result);
@@ -101,7 +101,25 @@ router.get('/files', sessionHandler.ensureAuthenticated, ensureAdminOnly, functi
 router.delete('/file/:fileId', sessionHandler.ensureAuthenticated, ensurePermitted, function (req, res, next) {
   databaseUtils.deleteFile(req.requestedFile.id, (error, result) => {
     if (error) return end(res, 500, 'Could not delete file');
+    databaseUtils.logEvent('file_deleted', req.user ? req.user.id : null, req.ip, {
+      originalName: req.requestedFile.originalName,
+      shortName: req.requestedFile.shortName,
+      mime: req.requestedFile.mime,
+      size: req.requestedFile.size
+    }, () => {});
     return end(res, 200, 'File deleted');
+  });
+});
+
+/**
+ * GET API - events
+ */
+router.get('/events', sessionHandler.ensureAuthenticated, ensureAdminOnly, function (req, res, next) {
+  let index = req.query.index ? parseInt(req.query.index) : 0;
+  let max = req.query.max ? parseInt(req.query.max) : 25;
+  databaseUtils.getEvents(index, max, function (error, result) {
+    if (error) return next(error);
+    return res.json(result);
   });
 });
 
@@ -113,6 +131,12 @@ router.post('/file/:fileId/visibility', sessionHandler.ensureAuthenticated, ensu
   file.hidden = req.body.hidden;
   databaseUtils.editFile(file, function (error, result) {
     if (error) return end(res, 500, 'Could not change visibility');
+    databaseUtils.logEvent(file.hidden ? 'file_hidden' : 'file_visible', req.user ? req.user.id : null, req.ip, {
+      originalName: req.requestedFile.originalName,
+      shortName: req.requestedFile.shortName,
+      mime: req.requestedFile.mime,
+      size: req.requestedFile.size
+    }, () => {});
     return end(res, 200, 'Visibility saved');
   })
 });
@@ -121,8 +145,8 @@ router.post('/file/:fileId/visibility', sessionHandler.ensureAuthenticated, ensu
  * GET API - users
  */
 router.get('/users', sessionHandler.ensureAuthenticated, ensureAdminOnly, function (req, res, next) {
-  var index = req.query.index ? parseInt(req.query.index) : 0;
-  var max = req.query.max ? parseInt(req.query.max) : 25;
+  let index = req.query.index ? parseInt(req.query.index) : 0;
+  let max = req.query.max ? parseInt(req.query.max) : 25;
   databaseUtils.getUsers(index, max, function (error, result) {
     if (error) return next(error);
     result = result.map(function (element) {
@@ -137,23 +161,30 @@ router.get('/users', sessionHandler.ensureAuthenticated, ensureAdminOnly, functi
 router.delete('/users/:userId', sessionHandler.ensureAuthenticated, ensureAdminOnly, function (req, res, next) {
   databaseUtils.deleteUser(req.searchedUser.id, function (error, result) {
     if (error) return end(res, 500, 'Could not delete user');
+    databaseUtils.logEvent('user_deleted', req.user ? req.user.id : null, req.ip, {
+      username: req.searchedUser.username,
+      email: req.searchedUser.email,
+      isAdmin: req.searchedUser.isAdmin,
+      enabled: req.searchedUser.enabled
+    }, () => {});
     return end(res, 200, 'User deleted');
   })
 });
 
 router.get('/regenerateAPIKey', sessionHandler.ensureAuthenticated, function (req, res, next) {
-  var user = {
+  let user = {
     id: req.user.id,
     apiKey: hat(256)
   };
   databaseUtils.editUser(user, function (error, result) {
     if (error) return end(res, 500, 'API Key generation failed');
+    databaseUtils.logEvent('api_key_generated', req.user ? req.user.id : null, req.ip, {}, () => {});
     return end(res, 200, 'API Key generated', {key: user.apiKey});
   })
 });
 
 router.post('/users/new', sessionHandler.ensureAuthenticated, ensureAdminOnly, function (req, res, next) {
-  var user = {};
+  let user = {};
   user.id = req.body.id;
   user.username = req.body.username;
   user.email = req.body.email;
@@ -173,6 +204,12 @@ router.post('/users/new', sessionHandler.ensureAuthenticated, ensureAdminOnly, f
   databaseUtils.addUser(user, function (error, result) {
     if (error && error.message === '400') return end(res, 400, 'Username occupied');
     if (error) return end(res, 500, 'Internal Server Error');
+    databaseUtils.logEvent('user_added', req.user ? req.user.id : null, req.ip, {
+      username: user.username,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      enabled: user.enabled
+    }, () => {});
     return end(res, 200, 'User created');
   });
 });
@@ -187,15 +224,17 @@ router.post('/settings', sessionHandler.ensureAuthenticated, ensureAdminOnly, fu
   settings.maxQuota = req.body.maxQuota;
   settings.mimeList = req.body.mimeList;
   settings.mimeListType = req.body.mimeListType;
+  settings.events = req.body.events;
 
   databaseUtils.updateSettings(settings, function (error, result) {
     if (error) return end(res, 500, 'Could not save settings');
+    databaseUtils.logEvent('settings_changed', req.user ? req.user.id : null, req.ip, {}, () => {});
     return end(res, 200, 'Settings saved');
   })
 });
 
 router.post('/users/:userId', sessionHandler.ensureAuthenticated, ensurePermitted, function (req, res, next) {
-  var user = {};
+  const user = {};
   user.id = req.searchedUser.id;
   user.email = req.body.email;
   if (req.body.password) user.password = req.body.password;
@@ -216,6 +255,12 @@ router.post('/users/:userId', sessionHandler.ensureAuthenticated, ensurePermitte
 
   databaseUtils.editUser(user, function (error, result) {
     if (error) return end(res, 500, 'Internal Server Error');
+    databaseUtils.logEvent('settings_changed', req.user ? req.user.id : null, req.ip, {
+      username: user.username,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      enabled: user.enabled
+    }, () => {});
     return end(res, 200, 'User saved');
   });
 });
@@ -224,7 +269,7 @@ router.post('/users/:userId', sessionHandler.ensureAuthenticated, ensurePermitte
 /**
  * POST API - Upload
  */
-var multerStorage = multer.diskStorage({
+let multerStorage = multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, uploadPath)
   },
@@ -234,7 +279,7 @@ var multerStorage = multer.diskStorage({
 });
 
 router.post('/upload', multer({storage: multerStorage}).single('file'), sessionHandler.authenticateAPIKey, function (req, res, next) {
-  var file;
+  let file;
 
   if (!req.file) {
     return end(res, 400, 'No file provided');
@@ -252,7 +297,7 @@ router.post('/upload', multer({storage: multerStorage}).single('file'), sessionH
   if (mimeInfo.ext.charAt(0) === '.') mimeInfo.ext = mimeInfo.ext.substr(1);
 
 
-  var newFile = {
+  let newFile = {
     fileId: file.filename,
     originalName: file.originalname,
     mime: mimeInfo.mime,
@@ -276,6 +321,12 @@ router.post('/upload', multer({storage: multerStorage}).single('file'), sessionH
         newFile.shortName = shortName;
         databaseUtils.addFile(newFile, function (error, result) {
           if (error) return end(res, 500, 'Upload failed');
+          databaseUtils.logEvent('file_upload', req.user ? req.user.id : null, req.ip, {
+            originalName: req.requestedFile.originalName,
+            shortName: req.requestedFile.shortName,
+            mime: req.requestedFile.mime,
+            size: req.requestedFile.size
+          }, () => {});
           return end(res, 201, 'File uploaded', {url: urlJoin(config.get('url'), result.ext ? result.shortName + '.' + result.ext : result.shortName)});
         });
       });

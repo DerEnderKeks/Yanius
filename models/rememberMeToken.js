@@ -1,7 +1,7 @@
-var thinky = require(__dirname + '/../util/thinky.js');
-var type = thinky.type;
+const thinky = require(__dirname + '/../util/thinky.js');
+const type = thinky.type;
 
-var RememberMeToken = thinky.createModel("remembermetoken", {
+const RememberMeToken = thinky.createModel("remembermetoken", {
   id: type.string(),
   token: type.string(),
   userId: type.string()
@@ -9,5 +9,5 @@ var RememberMeToken = thinky.createModel("remembermetoken", {
 
 module.exports = RememberMeToken;
 
-var User = require(__dirname + '/../models/user.js');
+const User = require(__dirname + '/../models/user.js');
 RememberMeToken.belongsTo(User, "user", "userId", "id");

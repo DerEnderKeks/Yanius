@@ -1,4 +1,4 @@
-# Yanius [![Version](https://img.shields.io/badge/Version-1.0.5-green.svg?style=flat-square)](https://github.com/DerEnderKeks/Yanius/blob/master/package.json#L3)
+# Yanius [![Version](https://img.shields.io/badge/Version-2.0.0-green.svg?style=flat-square)](https://github.com/DerEnderKeks/Yanius/blob/master/package.json#L3)
 *Yet Another Node Image Upload Server*
 
 *(The name is actually a lie. You can upload every file type.)*
@@ -27,9 +27,9 @@ As long the `Major` part of the version number (`Major.Minor.Patch`) didn't chan
 Otherwise you also have to execute the appropriate migration scripts. You can find them in `/scripts/migration/`.
 
 ##### Example
-To update from 0.0.0 to 1.0.0 you have to:
+To update from 0.x.x to 1.x.x you have to:
 
-* execute `node ./scripts/migration/0_0_0-to-1_0_0.js`
+* execute `node ./scripts/migration/0_x_x-to-1_x_x.js`
 * pray to a god of your choice
 
 #### Configuration

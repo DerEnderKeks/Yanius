@@ -1,10 +1,10 @@
-var blockEdit = false;
+let blockEdit = false;
 
 function editUser() {
   if (blockEdit) return;
   blockEdit = true;
-  var url = '/api/users/' + searchedUser.id;
-  var data = {
+  const url = '../api/users/' + searchedUser.id;
+  let data = {
     username: $('input[name=\'username\']').val(),
     email: $('input[name=\'email\']').val(),
     password: $('input[name=\'password\']').val(),

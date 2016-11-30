@@ -1,10 +1,11 @@
-var thinky = require(__dirname + '/../util/thinky.js');
-var r = thinky.r;
-var User = require(__dirname + '/../models/user.js');
-var rememberMeToken = require(__dirname + '/../models/rememberMeToken.js');
-var uid = require('uid-safe');
-var encryptionHandler = require(__dirname + '/../util/encryption-handler.js');
-var passport = require('passport');
+const thinky = require(__dirname + '/../util/thinky.js');
+const r = thinky.r;
+const User = require(__dirname + '/../models/user.js');
+const rememberMeToken = require(__dirname + '/../models/rememberMeToken.js');
+const uid = require('uid-safe');
+const encryptionHandler = require(__dirname + '/../util/encryption-handler.js');
+const passport = require('passport');
+const path = require('path');
 
 exports.findById = function (id, fn) {
   User.get(id).then(function (result) {
@@ -43,7 +44,7 @@ exports.issueToken = function (user, done) {
 };
 
 exports.saveRememberMeToken = function (token, uid, fn) {
-  var newToken = new rememberMeToken({
+  let newToken = new rememberMeToken({
     token: encryptionHandler.tokenHash(token),
     userId: uid
   });
@@ -55,10 +56,10 @@ exports.saveRememberMeToken = function (token, uid, fn) {
 };
 
 exports.consumeRememberMeToken = function (token, fn) {
-  var tokenHash = encryptionHandler.tokenHash(token);
+  let tokenHash = encryptionHandler.tokenHash(token);
   rememberMeToken.filter({token: tokenHash}).then(function (result) {
     if (!result[0]) return fn(new Error('Invalid token'), null);
-    var uid = result[0].userId;
+    let uid = result[0].userId;
     result[0].delete().then(function () {
       return fn(null, uid);
     }).error(function (error) {
@@ -71,7 +72,7 @@ exports.consumeRememberMeToken = function (token, fn) {
 
 exports.deleteRememberMeToken = function (token, fn) {
   if (!token) return fn();
-  var tokenHash = encryptionHandler.tokenHash(token);
+  let tokenHash = encryptionHandler.tokenHash(token);
   rememberMeToken.filter({token: tokenHash}).then(function (result) {
     if (!result[0]) return fn(new Error('Invalid token (Try to delete your cookies)'));
     result[0].delete().then(function () {
@@ -90,14 +91,14 @@ exports.ensureAdminOnly = function (req, res, next) {
   }
   req.flash('errorHeader', 'Nothing to see here. Move along..');
   req.flash('error', 'You are not allowed to access the requested site');
-  res.redirect('/dashboard');
+  res.redirect(path.relative(req.path, '/dashboard/login'));
 };
 
 exports.ensureAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/dashboard/login');
+  res.redirect(path.relative(req.path, '/dashboard/login'));
 };
 
 exports.authenticateAPIKey = function (req, res, next) {

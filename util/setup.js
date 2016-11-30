@@ -2,15 +2,15 @@
 
 module.exports = function (callback) {
 
-  var thinky = require(__dirname + '/../util/thinky.js');
-  var databaseUtils = require(__dirname + '/../util/database-utils.js');
-  var debug = require('debug')('yanius:setup');
-  var config = require('config');
-  var hat = require('hat');
-  var mkdirp = require('mkdirp');
-  var uploadPath = require(__dirname + '/../util/upload-path.js');
-  var encryptionHandler = require(__dirname + '/../util/encryption-handler.js');
-  var deasync = require('deasync');
+  const thinky = require(__dirname + '/../util/thinky.js');
+  const databaseUtils = require(__dirname + '/../util/database-utils.js');
+  const debug = require('debug')('yanius:setup');
+  const config = require('config');
+  const hat = require('hat');
+  const mkdirp = require('mkdirp');
+  const uploadPath = require(__dirname + '/../util/upload-path.js');
+  const encryptionHandler = require(__dirname + '/../util/encryption-handler.js');
+  const deasync = require('deasync');
 
   mkdirp(uploadPath, function (err) {
     if (err) throw err;
@@ -19,14 +19,68 @@ module.exports = function (callback) {
     if (err) throw err;
   });
 
-  var defaultConfig = {
+  let defaultConfig = {
     id: 1,
     encryptionSecret: hat(256),
     sessionSecret: hat(256),
     maxFileSize: 1e+7,
     maxQuota: 1e+8,
     mimeList: [],
-    mimeListType: true
+    mimeListType: true,
+    events: {
+      user_edited: {
+        text: 'User edited',
+        enabled: true
+      },
+      user_added: {
+        text: 'User added',
+        enabled: true
+      },
+      user_deleted: {
+        text: 'User deleted',
+        enabled: true
+      },
+      file_uploaded: {
+        text: 'File uploaded',
+        enabled: false
+      },
+      file_downloaded: {
+        text: 'File downloaded',
+        enabled: false
+      },
+      file_deleted: {
+        text: 'File deleted',
+        enabled: true
+      },
+      file_hidden: {
+        text: 'File hidden',
+        enabled: true
+      },
+      file_visible: {
+        text: 'File visible',
+        enabled: true
+      },
+      login_successful: {
+        text: 'Login successful',
+        enabled: true
+      },
+      login_failed: {
+        text: 'Login failed',
+        enabled: true
+      },
+      logout: {
+        text: 'Logout',
+        enabled: true
+      },
+      api_key_generated: {
+        text: 'API key generated',
+        enabled: true
+      },
+      settings_changed: {
+        text: 'Settings changed',
+        enabled: true
+      },
+    }
   };
   let configSaved = false;
   databaseUtils.getSetting('id', (error, result) => {

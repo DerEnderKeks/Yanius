@@ -32,6 +32,17 @@ block innerContent
                   span.lever
                   | Blacklist
           .row
+            .col
+              h5.blue-grey-text Eventlog
+              br
+
+              each val, index in settings.events
+                input(type='checkbox' id='event.' + index name='event.' + index checked=val.enabled onchange='settings.events.' + index + '.enabled = $(\'#event\\\\.' + index + '\')[0].checked')
+                label(for='event.' + index)=val.text
+                br
+                br
+
+          .row
             br
             .col.right
               br.hide-on-med-and-up
@@ -45,6 +56,7 @@ block scripts2
       mimeList: !{JSON.stringify(settings.mimeList)},
       mimeListType: #{settings.mimeListType},
       maxFileSize: #{settings.maxFileSize},
-      maxQuota: #{settings.maxQuota}
+      maxQuota: #{settings.maxQuota},
+      events: !{JSON.stringify(settings.events)}
     };
-  script(type='text/javascript' src='../js/dashboard/settings.js')
+  script(type='text/javascript' src=url_prefix + '../js/dashboard/settings.js')

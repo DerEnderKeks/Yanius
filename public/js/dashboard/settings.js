@@ -1,6 +1,6 @@
-var blockSave = false;
-var maxfilesizeslider = $('#maxfilesizeslider');
-var maxquotaslider = $('#maxquotaslider');
+let blockSave = false;
+let maxfilesizeslider = $('#maxfilesizeslider');
+let maxquotaslider = $('#maxquotaslider');
 
 function updateListTypeLabel() {
   let text = 'MIME type ' + ($('#mimelisttype')[0].checked ? 'blacklist' : 'whitelist') + ' (one per line)';
@@ -20,7 +20,7 @@ function arrayToStringWithNewlines(array) {
 function saveSettings() {
   if (blockSave) return;
   blockSave = true;
-  var url = '/api/settings';
+  const url = '../api/settings';
   $.ajax({
     url: url,
     type: 'POST',
@@ -85,7 +85,7 @@ createSilder();
 
 updateListTypeLabel();
 $('#mimelisttype').change(() => {
-  settings.mimeListType = $('#mimelisttype')[0].checked;
+  settings.mimeListType = $('#mimelisttype').is(':checked');
   updateListTypeLabel();
 });
 

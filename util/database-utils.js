@@ -1,12 +1,13 @@
-var thinky = require(__dirname + '/../util/thinky.js');
-var Errors = thinky.Errors;
-var r = thinky.r;
-var User = require(__dirname + '/../models/user.js');
-var File = require(__dirname + '/../models/file.js');
-var Config = require(__dirname + '/../models/config.js');
-var uploadPath = require(__dirname + '/../util/upload-path.js');
-var fs = require('fs');
-var path = require('path');
+const thinky = require(__dirname + '/../util/thinky.js');
+const Errors = thinky.Errors;
+const r = thinky.r;
+const User = require(__dirname + '/../models/user.js');
+const File = require(__dirname + '/../models/file.js');
+const Config = require(__dirname + '/../models/config.js');
+const EventLog = require(__dirname + '/../models/eventlog.js');
+const uploadPath = require(__dirname + '/../util/upload-path.js');
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Get file list for a specific user
@@ -23,22 +24,6 @@ exports.getFilesForUser = function (id, startIndex, max, callback) {
     return callback(error, null);
   });
 };
-
-/**
-/**
- * Get file list for a specific user
- * @param id Target user
- * @param callback callback
- * @return int file count
- *
-exports.countFilesForUser = function (id, callback) {
-  File.orderBy({index: r.desc("timestamp")}).filter({uploaderId: id}).then((result) => {
-    return callback(null, result.size);
-  }).error((error) => {
-    return callback(error, null);
-  });
-};
-*/
 
 /**
  * Get all files
@@ -182,7 +167,7 @@ exports.deleteUser = function (id, callback) {
 };
 
 exports.addUser = function (user, callback) {
-  var newUser = new User(user);
+  let newUser = new User(user);
   this.getUser(user.username, function (error, result) {
     if (!error || (error && error.message !== '404')) return callback(new Error(400), null);
     newUser.save().then(function (result) {
@@ -194,7 +179,7 @@ exports.addUser = function (user, callback) {
 };
 
 exports.addFile = function (file, callback) {
-  var newFile = new File(file);
+  let newFile = new File(file);
   newFile.save().then(function (result) {
     User.get(file.uploaderId).update({quotaUsed: r.row("quotaUsed").add(file.size)}).then(function (result) {
       return callback(null, file);
@@ -268,4 +253,57 @@ exports.updateSettings = function (settings, callback) {
   }).error((error) => {
     return callback(error, null);
   })
+};
+
+/**
+ * Log event to database
+ * @param {string} event - Event type
+ * @param {string} userId - User ID
+ * @param {string} sourceIP - Source IP Address
+ * @param {object} info - Additional data
+ * @param {function} callback - Callback
+ */
+exports.logEvent = (event, userId, sourceIP, info, callback) => {
+  let newEvent = new EventLog({
+    timestamp: new Date(),
+    type: event,
+    sourceIP: sourceIP,
+    userId: userId || null,
+    event_info: info
+  });
+  exports.getSetting('events', (err, result) => {
+    if (err && !result) return callback(null, result);
+    let temp = [];
+    for (let key in result) {
+      if (!result.hasOwnProperty(key)) continue;
+      if (result[key].enabled) temp.push(key);
+    }
+    if (temp.indexOf(newEvent.type) > -1) {
+      newEvent.save().then((result) => {
+        return callback(null, result);
+      }).error((error) => {
+        return callback(error, null);
+      })
+    }
+  });
+};
+
+/**
+ * Get events
+ * @param startIndex startIndex
+ * @param max max
+ * @param callback callback
+ */
+exports.getEvents = function (startIndex, max, callback) {
+  EventLog.orderBy({index: r.desc("timestamp")}).skip(startIndex).limit(max).getJoin({user: true}).then((result) => {
+    result.map((element) => {
+      if (!element.userId || !element.user) return element;
+      element.username = element.user.username;
+      element.user = undefined;
+      return element;
+    });
+    return callback(null, result);
+  }).error((error) => {
+    return callback(error, null);
+  });
 };

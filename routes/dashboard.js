@@ -1,13 +1,14 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
-var session = require('express-session');
-var sessionHandler = require(__dirname + '/../util/session-handler.js');
-var thinky = require(__dirname + '/../util/thinky.js');
-var r = thinky.r;
-var User = require(__dirname + '/../models/user.js');
-var config = require("config");
-var databaseUtils = require(__dirname + '/../util/database-utils.js');
+const express = require('express');
+const router = express.Router();
+const passport = require('passport');
+const session = require('express-session');
+const sessionHandler = require(__dirname + '/../util/session-handler.js');
+const thinky = require(__dirname + '/../util/thinky.js');
+const r = thinky.r;
+const User = require(__dirname + '/../models/user.js');
+const config = require("config");
+const databaseUtils = require(__dirname + '/../util/database-utils.js');
+const path = require('path');
 
 /**
  * PARAM username
@@ -27,7 +28,7 @@ router.param('username', function (req, res, next, param) {
  * GET Dashboard
  */
 router.get('/', sessionHandler.ensureAuthenticated, function (req, res, next) {
-  res.redirect('/dashboard/files');
+  res.redirect(path.relative(req.path, '/dashboard/files'));
 });
 
 /**
@@ -41,25 +42,26 @@ router.get('/login', function (req, res, next) {
  * GET Dashboard - Files
  */
 router.get('/files', sessionHandler.ensureAuthenticated, function (req, res, next) {
-  if (!req.query.g) {
-    databaseUtils.getSettings((err, result) => {
-      if (err) return next(Error(500));
-      res.render('dashboard/files', {
-        title: 'Your Files',
-        user: req.user,
-        apiUrl: '/api/files/me',
-        highlight: '#files',
-        settings: result
-      });
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/files', {
+      title: 'Your Files',
+      user: req.user,
+      apiUrl: '../api/files/me',
+      highlight: '#files',
+      settings: result
     });
-  } else {
-    sessionHandler.ensureAdminOnly(req, res, () => {
-      databaseUtils.getSettings((err, result) => {
-        if (err) return next(Error(500));
-        res.render('dashboard/files', {title: 'Files', user: req.user, apiUrl: '/api/files', showUploader: true, highlight: '#allfiles', settings: result});
-      });
-    });
-  }
+  });
+});
+
+/**
+ * GET Dashboard - All Files
+ */
+router.get('/files/all', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/files', {title: 'Files', user: req.user, apiUrl: '../../api/files', showUploader: true, highlight: '#allfiles', settings: result, url_prefix: '../'});
+  });
 });
 
 /**
@@ -69,7 +71,7 @@ router.get('/files/:username', sessionHandler.ensureAuthenticated, sessionHandle
   databaseUtils.getSettings((err, result) => {
     if (err) return next(Error(500));
     res.render('dashboard/files',
-      {title: 'Files of ' + req.searchedUser.username, user: req.user, apiUrl: '/api/files/' + req.searchedUser.username, highlight: '', settings: result});
+      {title: 'Files of ' + req.searchedUser.username, user: req.user, apiUrl: '../../api/files/' + req.searchedUser.username, highlight: '', settings: result, url_prefix: '../'});
   });
 });
 
@@ -84,12 +86,22 @@ router.get('/users', sessionHandler.ensureAuthenticated, sessionHandler.ensureAd
 });
 
 /**
+ * GET Dashboard - Event Log
+ */
+router.get('/eventlog', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
+  databaseUtils.getSettings((err, result) => {
+    if (err) return next(Error(500));
+    res.render('dashboard/event-log', {title: 'Event Log', user: req.user, settings: result});
+  });
+});
+
+/**
  * GET Dashboard - User
  */
 router.get('/user/:username', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
   databaseUtils.getSettings((err, result) => {
     if (err) return next(Error(500));
-    res.render('dashboard/user', {title: 'User', user: req.user, searchedUser: req.searchedUser, settings: result});
+    res.render('dashboard/user', {title: 'User', user: req.user, searchedUser: req.searchedUser, settings: result, url_prefix: '../'});
   });
 });
 
@@ -116,7 +128,7 @@ router.get('/settings', sessionHandler.ensureAuthenticated, sessionHandler.ensur
 /**
  * GET Dashboard - Help
  */
-router.get('/help', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
+router.get('/help', sessionHandler.ensureAuthenticated, function (req, res, next) {
   databaseUtils.getSettings((err, result) => {
     if (err) return next(Error(500));
     res.render('dashboard/help', {title: 'Help', user: req.user, settings: result});
@@ -127,7 +139,7 @@ router.get('/help', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdm
  * POST Dashboard - Login
  */
 router.post('/login',
-  passport.authenticate('local', {failureRedirect: '/dashboard/login', failureFlash: true}),
+  passport.authenticate('local', {failureRedirect: 'login', failureFlash: true}),
   function (req, res, next) {
     if (!req.body.remember_me) {
       return next();
@@ -146,7 +158,7 @@ router.post('/login',
     });
   },
   function (req, res) {
-    res.redirect('/dashboard');
+    res.redirect(path.relative(req.path, '/dashboard'));
   }
 );
 
@@ -155,9 +167,10 @@ router.post('/login',
  */
 router.get('/logout', function (req, res, next) {
   sessionHandler.deleteRememberMeToken(req.cookies.remember_me, function () {
+    databaseUtils.logEvent('logout', req.user ? req.user.id : null, req.ip, {}, () => {});
     res.clearCookie('remember_me');
     req.logout();
-    res.redirect('/dashboard/login');
+    res.redirect(path.relative(req.path, '/dashboard/login'));
   });
 });
 

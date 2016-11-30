@@ -1,6 +1,6 @@
-var count = 0;
-var blockUpdate = false;
-var users = [];
+let count = 0;
+let blockUpdate = false;
+let users = [];
 
 function hideLoader() {
   $('#loader').addClass('hide');
@@ -21,9 +21,9 @@ function appendUser(user) {
     '<div class="secondary-content">' +
     '<a class="pointer" onclick="deleteUser(\'' + user.id + '\', false)">' +
     '<i class="material-icons red-text">delete</i></a>' +
-    '<a class="pointer" href="/dashboard/files/' + user.username + '">' +
+    '<a class="pointer" href="files/' + user.username + '">' +
     '<i class="material-icons teal-text darken-3">folder</i></a>' +
-    '<a class="pointer" href="/dashboard/user/' + user.username + '">' +
+    '<a class="pointer" href="user/' + user.username + '">' +
     '<i class="material-icons teal-text darken-3">edit</i>' +
     '</a>' +
     '</div>' +
@@ -32,7 +32,7 @@ function appendUser(user) {
 }
 
 function loadUsers() {
-  let url = '/api/users?index=' + count + '&max=25';
+  let url = '../api/users?index=' + count + '&max=25';
   $.ajax({
     url: url
   }).done(function (data) {
@@ -57,7 +57,7 @@ function loadMore(force) {
 
 function deleteUser(id, confirm) {
   if (confirm) {
-    let url = '/api/users/' + id;
+    let url = '../api/users/' + id;
     $.ajax({
       url: url,
       type: 'DELETE'
@@ -83,7 +83,7 @@ function deleteUser(id, confirm) {
 
 function addUser(confirm) {
   if (confirm) {
-    let url = '/api/users/new';
+    let url = '../api/users/new';
     let data = {
       username: $('input[name=\'username\']').val(),
       email: $('input[name=\'email\']').val(),

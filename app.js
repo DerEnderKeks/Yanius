@@ -1,38 +1,38 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var uid = require("uid-safe");
-var flash = require('express-flash');
-var config = require('config');
-var passport = require('passport');
-var deasync = require("deasync");
-var encryptionHandler = require(__dirname + '/util/encryption-handler.js');
-var thinky = require(__dirname + '/util/thinky.js');
-var r = thinky.r;
-var databaseUtils = require(__dirname + '/util/database-utils.js');
-var RDBStore = require('session-rethinkdb')(session);
-var LocalStrategy = require('passport-local').Strategy;
-var LocalAPIKeyStrategy = require('passport-localapikey').Strategy;
-var RememberMeStrategy = require('passport-remember-me').Strategy;
-var sessionHandler = require(__dirname + '/util/session-handler.js');
-var HttpStatus = require('http-status-codes');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const uid = require("uid-safe");
+const flash = require('express-flash');
+const config = require('config');
+const passport = require('passport');
+const deasync = require("deasync");
+const encryptionHandler = require(__dirname + '/util/encryption-handler.js');
+const thinky = require(__dirname + '/util/thinky.js');
+const r = thinky.r;
+const databaseUtils = require(__dirname + '/util/database-utils.js');
+const RDBStore = require('session-rethinkdb')(session);
+const LocalStrategy = require('passport-local').Strategy;
+const LocalAPIKeyStrategy = require('passport-localapikey').Strategy;
+const RememberMeStrategy = require('passport-remember-me').Strategy;
+const sessionHandler = require(__dirname + '/util/session-handler.js');
+const HttpStatus = require('http-status-codes');
 
-var sessionStore = new RDBStore(r, {
+const sessionStore = new RDBStore(r, {
   browserSessionsMaxAge: 5000,
   table: 'sessions'
 });
 
-var routes = require(__dirname + '/routes/index');
-var api = require(__dirname + '/routes/api');
-var dashboard = require(__dirname + '/routes/dashboard');
+const routes = require(__dirname + '/routes/index');
+const api = require(__dirname + '/routes/api');
+const dashboard = require(__dirname + '/routes/dashboard');
 
-var app = express();
+const app = express();
 
-var sessionSecret = null;
+let sessionSecret = null;
 
 // setup
 let setupStatus = require(__dirname + '/util/setup.js')();
@@ -125,19 +125,24 @@ passport.deserializeUser(function (id, done) {
 });
 passport.use(new LocalStrategy({
     usernameField: 'username',
-    passwordField: 'password'
+    passwordField: 'password',
+    passReqToCallback: true
   },
-  function (username, password, done) {
+  function (req, username, password, done) {
     process.nextTick(function () {
       sessionHandler.findByUsername(username, function (err, user) {
         if (err) return done(err);
         let errorMsg = 'Invalid username or password!';
         if (!user) return done(null, false, {message: errorMsg, type: 'error'});
         if (!user.enabled) return done(null, false, {message: 'This user account is disabled.', type: 'error'});
-        if (!encryptionHandler.check(password, user.password)) return done(null, false, {
-          message: errorMsg,
-          type: 'error'
-        });
+        if (!encryptionHandler.check(password, user.password)) {
+          databaseUtils.logEvent('login_failed', user ? user.id : null, req.ip, {}, () => {});
+          return done(null, false, {
+            message: errorMsg,
+            type: 'error'
+          });
+        }
+        databaseUtils.logEvent('login_successful', user ? user.id : null, req.ip, {}, () => {});
         return done(null, user);
       })
     });
@@ -162,12 +167,8 @@ passport.use(new RememberMeStrategy(
 passport.use(new LocalAPIKeyStrategy(
   function (apikey, done) {
     sessionHandler.findByAPIKey(apikey, function (err, user) {
-      if (err) {
-        return done(err);
-      }
-      if (!user) {
-        return done(null, false, {message: 'Invalid API Key', type: 'error'});
-      }
+      if (err) return done(err);
+      if (!user) return done(null, false, {message: 'Invalid API Key', type: 'error'});
       return done(null, user);
     })
   }
@@ -177,7 +178,7 @@ passport.use(new LocalAPIKeyStrategy(
  * catch 404 and forward to error handler
  */
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
@@ -193,7 +194,7 @@ if (process.env.NODE_ENV === 'development') {
     if (res._header) return;
     if (err.message === 'Invalid token') {
       res.clearCookie('remember_me');
-      return res.redirect('/dashboard');
+      return res.redirect(path.relative(req.path, '/dashboard'));
     }
     console.error(err);
     res.status(err.status || 500);
@@ -211,7 +212,7 @@ if (process.env.NODE_ENV === 'development') {
     if (res._header) return;
     if (err.message === 'Invalid token') {
       res.clearCookie('remember_me');
-      return res.redirect('/dashboard');
+      return res.redirect(path.relative(req.path, '/dashboard'));
     }
     res.status(err.status || 500);
     res.render('error', {

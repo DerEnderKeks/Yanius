@@ -1,7 +1,7 @@
-var thinky = require(__dirname + '/../util/thinky.js');
-var type = thinky.type;
+const thinky = require(__dirname + '/../util/thinky.js');
+const type = thinky.type;
 
-var File = thinky.createModel("files", {
+const File = thinky.createModel("files", {
   id: type.string(),
   fileId: type.string(),
   uploaderId: type.string(),
@@ -19,5 +19,5 @@ module.exports = File;
 
 File.ensureIndex("timestamp");
 
-var User = require(__dirname + '/../models/user.js');
+const User = require(__dirname + '/../models/user.js');
 File.belongsTo(User, "uploader", "uploaderId", "id");

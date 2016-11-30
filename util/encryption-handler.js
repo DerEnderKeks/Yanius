@@ -1,13 +1,13 @@
 'use strict';
 
-var thinky = require(__dirname + '/../util/thinky.js');
-var databaseUtils = require(__dirname + '/../util/database-utils.js');
-var bcrypt = require('bcrypt');
-var config = require('config');
-var crypto = require('crypto');
-var deasync = require('deasync');
+const thinky = require(__dirname + '/../util/thinky.js');
+const databaseUtils = require(__dirname + '/../util/database-utils.js');
+const bcrypt = require('bcrypt');
+const config = require('config');
+const crypto = require('crypto');
+const deasync = require('deasync');
 
-var encryptionKey = null;
+let encryptionKey = null;
 
 exports.init = function () {
   databaseUtils.getSetting('encryptionSecret', (error, result) => {
@@ -22,7 +22,7 @@ exports.init = function () {
   });
 };
 
-var saltRounds = config.get('saltRounds');
+const saltRounds = config.get('saltRounds');
 
 exports.check = function (value, valueHash) {
   if (!value || !valueHash) return;

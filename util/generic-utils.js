@@ -1,4 +1,4 @@
-var databaseUtils = require(__dirname + '/database-utils.js');
+const databaseUtils = require(__dirname + '/database-utils.js');
 
 /**
  * Check whether a user is allowed to upload a specific file according to settings in database

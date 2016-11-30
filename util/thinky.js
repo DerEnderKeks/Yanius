@@ -1,7 +1,7 @@
 'use strict';
 
-var config = require('config').get("dbConfig");
-var thinky = require('thinky')({
+const config = require('config').get("dbConfig");
+const thinky = require('thinky')({
   'host': config.get('host'),
   'port': config.get('port'),
   'db': config.get('dbName'),

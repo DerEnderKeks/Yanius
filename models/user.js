@@ -1,7 +1,7 @@
-var thinky = require(__dirname + '/../util/thinky.js');
-var type = thinky.type;
+const thinky = require(__dirname + '/../util/thinky.js');
+const type = thinky.type;
 
-var User = thinky.createModel("users", {
+const User = thinky.createModel("users", {
   id: type.string(),
   username: type.string().min(4),
   email: type.string().email(),
@@ -16,8 +16,8 @@ module.exports = User;
 
 User.ensureIndex("username");
 
-var File = require(__dirname + '/../models/file.js');
+const File = require(__dirname + '/../models/file.js');
 User.hasMany(File, 'files', 'id', 'uploaderId');
 
-var RememberMeToken = require(__dirname + '/../models/rememberMeToken.js');
+const RememberMeToken = require(__dirname + '/../models/rememberMeToken.js');
 User.hasMany(RememberMeToken, 'rememberMeToken', 'id', 'userId');

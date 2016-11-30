@@ -1,5 +1,6 @@
 doctype html
 html
+
   head
     title= title
 
@@ -8,21 +9,17 @@ html
     meta(name='theme-color', content='#6a1b9a')
 
     link(rel='stylesheet', href='//fonts.googleapis.com/icon?family=Material+Icons')
-    link(type='text/css', rel='stylesheet', href='../stylesheets/vendor/materialize/materialize.css', media='screen,projection')
-    link(type='text/css', rel='stylesheet', href='../stylesheets/vendor/noUiSlider/nouislider.css', media='screen,projection')
-    link(type='text/css', rel='stylesheet', href='../stylesheets/vendor/prism/prism.css', media='screen,projection')
-    link(type='text/css', rel='stylesheet', href='../stylesheets/style.css', media='screen,projection')
+    link(type='text/css', rel='stylesheet', href='stylesheets/vendor/materialize/materialize.css', media='screen,projection')
+    link(type='text/css', rel='stylesheet', href='stylesheets/style.css', media='screen,projection')
   body
     block content
     script(type='text/javascript' src='https://code.jquery.com/jquery-2.2.4.min.js')
     script.
       if (!window.jQuery) {
-        document.write('<script src="../js/vendor/jquery-2.2.4.min.js"><\/script>');
+        document.write('<script src="./js/vendor/jquery-2.2.4.min.js"><\/script>');
       }
-    script(type='text/javascript' src='../js/vendor/materialize/bin/materialize.min.js')
-    script(type='text/javascript' src='../js/vendor/noUiSlider/nouislider.min.js')
-    script(type='text/javascript' src='../js/vendor/validator/validator.min.js')
-    script(type='text/javascript' src='../js/vendor/progressbarjs/progressbar.min.js')
-    script(type='text/javascript' src='../js/vendor/prism/prism.min.js')
+    script(type='text/javascript' src='js/vendor/materialize/bin/materialize.min.js')
+    script.
+      window.url_prefix = '!{url_prefix}';
     block scripts
     block scripts2
