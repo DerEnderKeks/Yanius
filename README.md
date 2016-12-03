@@ -26,6 +26,8 @@ cp config/default.json.example config/default.json
 As long the `Major` part of the version number (`Major.Minor.Patch`) didn't change, you can update using `git pull`.
 Otherwise you also have to execute the appropriate migration scripts. You can find them in `/scripts/migration/`.
 
+If it doesn't start after an update do `rm -rf node_modules && npm i` before asking for help.
+
 ##### Example
 To update from 0.x.x to 1.x.x you have to:
 
