@@ -17,7 +17,7 @@ block content
     #modal.modal
       .modal-content#modalcontent
       .modal-footer#modalfooter
-    ul.side-nav.fixed#slide-out
+    ul.side-nav.fixed#slide-out(style="overflow: hidden")
       li
         .userView
           .background.purple.darken-3
@@ -26,34 +26,35 @@ block content
             img.circle(src=url_prefix + '../images/favicon.svg')
           a.white-text.truncate.name(href=settingsUrl) #{user.username}
           a.white-text.truncate.email(href=settingsUrl) #{user.email}
-      li#files
-        a.blue-grey-text(href=url_prefix + 'files') Files
-          i.material-icons folder
-      if user.isAdmin == true
-        li.divider
-        li#users
-          a.blue-grey-text(href=url_prefix + 'users') Users
-            i.material-icons people
-        li#allfiles
-          a.blue-grey-text(href=url_prefix + 'files/all') All Files
+      div(style="overflow: auto; max-height: calc(100vh - 250px)")
+        li#files
+          a.blue-grey-text(href=url_prefix + 'files') Files
             i.material-icons folder
-        li#eventlog
-          a.blue-grey-text(href=url_prefix + 'eventlog') Event Log
-            i.material-icons event_note
-        li#settings
-          a.blue-grey-text(href=url_prefix + 'settings') Settings
-            i.material-icons settings
-      li.divider
-      li#account
-        a.blue-grey-text(href=url_prefix + 'account') Account
-          i.material-icons account_circle
-      li#help
-        a.blue-grey-text(href=url_prefix + 'help') Help
-          i.material-icons help
-      li#logout
-        a.blue-grey-text(href=url_prefix + 'logout') Logout
-          i.material-icons exit_to_app
-      div(style='position: absolute; top: 100vh; transform: translateY(-75px); width: 100%')
+        if user.isAdmin == true
+          li.divider
+          li#users
+            a.blue-grey-text(href=url_prefix + 'users') Users
+              i.material-icons people
+          li#allfiles
+            a.blue-grey-text(href=url_prefix + 'files/all') All Files
+              i.material-icons folder
+          li#eventlog
+            a.blue-grey-text(href=url_prefix + 'eventlog') Event Log
+              i.material-icons event_note
+          li#settings
+            a.blue-grey-text(href=url_prefix + 'settings') Settings
+              i.material-icons settings
+        li.divider
+        li#account
+          a.blue-grey-text(href=url_prefix + 'account') Account
+            i.material-icons account_circle
+        li#help
+          a.blue-grey-text(href=url_prefix + 'help') Help
+            i.material-icons help
+        li#logout
+          a.blue-grey-text(href=url_prefix + 'logout') Logout
+            i.material-icons exit_to_app
+      div(style='position: absolute; top: calc(100vh - 75px); width: 100%')
         li.divider
         li#quotaInfo(style='margin-top: 7px')
           .row
