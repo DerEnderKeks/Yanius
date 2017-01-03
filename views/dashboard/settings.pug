@@ -32,6 +32,10 @@ block innerContent
                   span.lever
                   | Blacklist
           .row
+            .col.s12.input-field
+              input#trackingid(type='text', name='trackingid')
+              label(for='trackingid') Google Analytics tracking ID (leave empty to disable)
+          .row
             .col
               h5.blue-grey-text Eventlog
               br
@@ -57,6 +61,7 @@ block scripts2
       mimeListType: #{settings.mimeListType},
       maxFileSize: #{settings.maxFileSize},
       maxQuota: #{settings.maxQuota},
-      events: !{JSON.stringify(settings.events)}
+      events: !{JSON.stringify(settings.events)},
+      trackingID: '!{settings.trackingID}'
     };
   script(type='text/javascript' src=url_prefix + '../js/dashboard/settings.js')

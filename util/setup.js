@@ -27,6 +27,7 @@ module.exports = function (callback) {
     maxQuota: 1e+8,
     mimeList: [],
     mimeListType: true,
+    trackingID: '',
     events: {
       user_edited: {
         text: 'User edited',

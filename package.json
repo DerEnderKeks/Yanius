@@ -1,6 +1,6 @@
 {
   "name": "Yanius",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Yet Another Node Image Upload Server",
   "url": "https://github.com/DerEnderKeks/Yanius",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "session-rethinkdb": "^2.0.0",
     "thinky": "^2.3.4",
     "uid-safe": "^2.1.1",
-    "universal-analytics": "^0.4.2",
+    "universal-analytics": "^0.4.8",
     "url-join": "^1.1.0",
     "validator": "^6.0.0"
   },

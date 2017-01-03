@@ -93,6 +93,10 @@ $('#mimelist').val(arrayToStringWithNewlines(settings.mimeList)).keyup(() => {
   settings.mimeList = $('#mimelist').val().split('\n');
 });
 
+$('#trackingid').val(settings.trackingID).keyup(() => {
+  settings.trackingID = $('#trackingid').val();
+});
+
 maxfilesizeslider[0].noUiSlider.on('update', (value) => {
   $('#maxfilesize').text(value);
 });

@@ -6,6 +6,7 @@ const uploadPath = require(__dirname + '/../util/upload-path.js');
 const databaseUtils = require(__dirname + '/../util/database-utils.js');
 const fs = require('fs');
 const path = require("path");
+const ua = require('universal-analytics');
 
 /**
  * PARAM username
@@ -54,6 +55,18 @@ router.get('/:shortname', function (req, res, next) {
     res.append('Last-Modified', req.requestedFile.timestamp.toUTCString());
     res.sendFile(filePath, {headers: {'Content-Type': req.requestedFile.mime}});
     databaseUtils.increaseViewCount(req.requestedFile.id, () => {});
+    databaseUtils.getSetting('trackingID', (err, trackingID) => {
+      if (err) return;
+      if (!trackingID || !trackingID.match(/UA-[A-Za-z0-9-]+/)) return;
+      let visitor = ua(trackingID);
+      visitor.pageview({
+        dp: `/${req.requestedFile.shortName}`,
+        uip: req.ip,
+        aip: true,
+        ua: req.get('User-Agent'),
+        dr: req.get('Referer'),
+      }).send();
+    });
     databaseUtils.logEvent('file_downloaded', req.user ? req.user.id : null, req.ip, {
       originalName: req.requestedFile.originalName,
       shortName: req.requestedFile.shortName,

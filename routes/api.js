@@ -225,6 +225,7 @@ router.post('/settings', sessionHandler.ensureAuthenticated, ensureAdminOnly, fu
   settings.mimeList = req.body.mimeList;
   settings.mimeListType = req.body.mimeListType;
   settings.events = req.body.events;
+  settings.trackingID = req.body.trackingID;
 
   databaseUtils.updateSettings(settings, function (error, result) {
     if (error) return end(res, 500, 'Could not save settings');
@@ -295,7 +296,6 @@ router.post('/upload', multer({storage: multerStorage}).single('file'), sessionH
   };
   if (mimeInfo.ext === 'bin') mimeInfo.ext = path.extname(file.originalname);
   if (mimeInfo.ext.charAt(0) === '.') mimeInfo.ext = mimeInfo.ext.substr(1);
-
 
   let newFile = {
     fileId: file.filename,
