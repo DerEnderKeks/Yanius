@@ -1,6 +1,6 @@
-language: javascript
+language: node_js
 node_js:
-  - '6'
+  - '7'
 before_script:
   - npm install
 script:
