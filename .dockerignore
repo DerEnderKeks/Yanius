@@ -2,9 +2,6 @@
 node_modules/
 data/upload/
 cache/
-config/*.json
-
-*.js
 
 *.log
 *.css
