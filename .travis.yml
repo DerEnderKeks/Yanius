@@ -2,14 +2,12 @@ language: node_js
 node_js:
   - '7'
 env:
-  - CXX=g++-5.4
+  - CXX=g++-5
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-5.4
-before_script:
-  - npm install
+      - g++-5
 script:
   - npm run build:build
