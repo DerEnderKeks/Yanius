@@ -14,7 +14,7 @@
     "exec": "node index.js",
     "build:build": "node ./node_modules/.bin/tsc index.ts",
     "build:live": "node ./node_modules/nodemon --exec ./node_modules/.bin/ts-node -- index.ts",
-    "install:dev": "rm -rf ./node_modules/ && NODE_ENV=development npm install",
+    "install:dev": "rm -rf ./node_modules/ && npm install --only=prod --only=dev",
     "install:prod": "rm -rf ./node_modules/ && npm install --only=prod"
   },
   "dependencies": {

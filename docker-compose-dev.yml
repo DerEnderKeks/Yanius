@@ -1,0 +1,17 @@
+# !!!
+# This file is only for development purposes. If you search for a proper docker-compose.yml take a look at https://github.com/DerEnderKeks/Yanius-Docker
+# !!!
+
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data/upload:/usr/src/app/data/upload
+      - ./data/config:/usr/src/app/data/config
+  db:
+    image: "mongo:latest"
+    volumes:
+      - ./data/database:/data
