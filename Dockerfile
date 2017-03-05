@@ -14,5 +14,8 @@ RUN [ "npm", "install" ]
 # Bundle app source
 COPY . /usr/src/app
 
+# Compile TypeScript
+RUN [ "npm", "run", "build:build" ]
+
 #EXPOSE 3000
 CMD [ "npm", "run", "exec" ]
