@@ -1,0 +1,27 @@
+extends ./index
+
+block innerContent
+  div#content
+    .row
+      .col.s10.offset-s1
+        br
+        h3.blue-grey-text Upload
+        form.col.s12(action='/api/upload', method='POST')
+          .row
+            .col.s12.input-field
+              input#file(type='file', name='file')
+              label(for='file') File
+          .row
+            .col.s12.input-field
+              input#apikey(type='hidden', name='apikey', value=searchedUser.apiKey)
+          .row
+            br
+            .col.right
+              br.hide-on-med-and-up
+              br.hide-on-med-and-up
+              a.btn.waves-effect.waves-light(type='submit') Upload
+                i.material-icons.right cloud_upload
+
+block scripts2
+  script.
+    window.user = {id: '#{searchedUser.id}'}
