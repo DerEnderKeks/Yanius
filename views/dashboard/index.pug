@@ -30,6 +30,9 @@ block content
         li#files
           a.blue-grey-text(href=url_prefix + 'files') Files
             i.material-icons folder
+        li#upload
+          a.blue-grey-text(href=url_prefix + 'upload') Upload
+            i.material-icons cloud_upload
         if user.isAdmin == true
           li.divider
           li#users

@@ -49,3 +49,28 @@ span.badge.group-badge {
 .small-row {
   margin-bottom: unset;
 }
+
+.drag-area {
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+  pointer-events: none;
+  background-color: #fff;
+  font-size: 48pt;
+  
+  transition: opacity .3s ease;
+  
+  &::after {
+    display: block;
+    font-size: 48pt;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translateY(-50%) translateX(-50%);
+    content: 'Drag files here';
+  }
+}
