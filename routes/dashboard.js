@@ -88,10 +88,10 @@ router.get('/users', sessionHandler.ensureAuthenticated, sessionHandler.ensureAd
 /**
  * GET Dashboard - Upload
  */
-router.get('/upload', sessionHandler.ensureAuthenticated, sessionHandler.ensureAdminOnly, function (req, res, next) {
+router.get('/upload', sessionHandler.ensureAuthenticated, function (req, res, next) {
   databaseUtils.getSettings((err, result) => {
     if (err) return next(Error(500));
-    res.render('dashboard/upload', {title: 'Upload', user: req.user, settings: result});
+    res.render('dashboard/upload', {title: 'Upload', user: req.user, searchedUser: req.user, settings: result});
   });
 });
 
