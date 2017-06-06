@@ -1,30 +1,40 @@
 extends ./index
 
 block innerContent
+  div.drag-area#dropzone
   div#content
     .row
       .col.s10.offset-s1
         br
         h3.blue-grey-text Upload
-        form.col.s12(action='/api/upload', method='POST')
+        .col.s12(action='/api/upload', method='POST')
           .row
             .col.s12.input-field.file-field
               .btn
                 span File
-                input#file(type='file', name='file')
+                input#file(type='file')
               .file-path-wrapper
                 input.file-path(type='text')
           .row
+            .col.s12
+              input#hide(type='checkbox')
+              label(for='hide') Hide file
+          .row
             .col.s12.input-field
-              input#apikey(type='hidden', name='apikey', value=searchedUser.apiKey)
+              input#apikey(type='hidden', value=searchedUser.apiKey)
           .row
             br
+            br.hide-on-med-and-up
+            br.hide-on-med-and-up
             .col.right
-              br.hide-on-med-and-up
-              br.hide-on-med-and-up
-              button.btn.waves-effect.waves-light(type='submit') Upload
+              a#upload-button.btn.waves-effect.waves-light(onclick='uploadFile()') Upload
                 i.material-icons.right cloud_upload
-
+          .row
+            .col.right
+              input#open-file(checked='checked', type='checkbox')
+              label(for='open-file') Open file after uploading
+              
 block scripts2
   script.
     window.user = {id: '#{searchedUser.id}'}
+  script(type='text/javascript' src=url_prefix + '../js/dashboard/upload.js')
