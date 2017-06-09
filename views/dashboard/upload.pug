@@ -21,7 +21,7 @@ block innerContent
               label(for='hide') Hide file
           .row
             .col.s12.input-field
-              input#apikey(type='hidden', value=searchedUser.apiKey)
+              input#apikey(type='hidden', value=user.apiKey)
           .row
             br
             br.hide-on-med-and-up
@@ -36,5 +36,5 @@ block innerContent
               
 block scripts2
   script.
-    window.user = {id: '#{searchedUser.id}'}
+    window.user = {id: '#{user.id}'}
   script(type='text/javascript' src=url_prefix + '../js/dashboard/upload.js')
