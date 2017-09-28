@@ -7,6 +7,7 @@ const databaseUtils = require(__dirname + '/../util/database-utils.js');
 const fs = require('fs');
 const path = require("path");
 const ua = require('universal-analytics');
+const mime = require('mime-types');
 
 /**
  * PARAM username
@@ -47,13 +48,16 @@ router.get('/:shortname', function (req, res, next) {
 
     let disableDownload = [                                 // mime type whitelist for files that browsers can display
       'application/pdf',                                    // pdf - PDF
+      'application/json',                                   // json - JSON
       'application/x-shockwave-flash'                       // swf - Flash
     ];
 
-    if (req.requestedFile.mime.startsWith('application/') && disableDownload.indexOf(req.requestedFile.mime) < 0)
+    //if (req.requestedFile.mime.startsWith('application/') && disableDownload.indexOf(req.requestedFile.mime) < 0) // Doesn't work properly with text files (#33)
+    if ((mime.lookup(req.requestedFile.originalName) || 'application/octet-stream').startsWith('application/') && disableDownload.indexOf(mime.lookup(req.requestedFile.originalName) || 'application/octet-stream') < 0)
       res.attachment(req.requestedFile.originalName); // adding the Content-Disposition header to every file that is mime type application/* and is not in the disableDownload array
     res.append('Last-Modified', req.requestedFile.timestamp.toUTCString());
-    res.sendFile(filePath, {headers: {'Content-Type': req.requestedFile.mime}});
+    //res.sendFile(filePath, {headers: {'Content-Type': req.requestedFile.mime}}); // Doesn't work properly with text files (#33)
+    res.sendFile(filePath, {headers: {'Content-Type': (mime.lookup(req.requestedFile.originalName) || 'application/octet-stream')}});
     databaseUtils.increaseViewCount(req.requestedFile.id, () => {});
     databaseUtils.getSetting('trackingID', (err, trackingID) => {
       if (err) return;
