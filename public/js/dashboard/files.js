@@ -1,5 +1,4 @@
 let count = 0;
-let blockUpdate = false;
 let files = [];
 const timezone = moment.tz.guess();
 moment.locale(window.navigator.language);
@@ -49,7 +48,7 @@ function changeVisibility(fileId, hide) {
     Materialize.toast(data.message, 5000);
     count = 0;
     $('#filelist').html('');
-    loadMore(true);
+    loadMore();
   }).fail((data) => {
     Materialize.toast(JSON.parse(data.responseText).message, 5000);
   });
@@ -70,14 +69,9 @@ function loadFiles() {
   });
 }
 
-function loadMore(force) {
-  if (blockUpdate && !force) return;
-  blockUpdate = true;
+function loadMore() {
   showLoader();
   loadFiles();
-  setTimeout(() => {
-    blockUpdate = false;
-  }, 2000);
 }
 
 function deleteFile(id, confirm) {
@@ -91,7 +85,7 @@ function deleteFile(id, confirm) {
       Materialize.toast(response.message, 5000);
       count = 0;
       $('#filelist').html('');
-      loadMore(true);
+      loadMore();
     });
   } else {
     $('#modalcontent').html(

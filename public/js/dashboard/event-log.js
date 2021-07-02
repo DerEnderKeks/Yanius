@@ -1,5 +1,4 @@
 let count = 0;
-let blockUpdate = false;
 const timezone = moment.tz.guess();
 moment.locale(window.navigator.language);
 
@@ -74,14 +73,9 @@ function loadEvents() {
   });
 }
 
-function loadMore(force) {
-  if (blockUpdate && !force) return;
-  blockUpdate = true;
+function loadMore() {
   showLoader();
   loadEvents();
-  setTimeout(() => {
-    blockUpdate = false;
-  }, 2000);
 }
 
 loadEvents();

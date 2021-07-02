@@ -1,4 +1,3 @@
-let blockSave = false;
 let maxfilesizeslider = $('#maxfilesizeslider');
 let maxquotaslider = $('#maxquotaslider');
 
@@ -18,8 +17,6 @@ function arrayToStringWithNewlines(array) {
 }
 
 function saveSettings() {
-  if (blockSave) return;
-  blockSave = true;
   const url = '../api/settings';
   $.ajax({
     url: url,
@@ -30,9 +27,6 @@ function saveSettings() {
   }).always(function (response) {
     Materialize.toast(response.message, 5000);
   });
-  setTimeout(function () {
-    blockSave = false;
-  }, 2000);
 }
 
 function createSilder() {

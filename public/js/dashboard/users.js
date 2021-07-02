@@ -1,5 +1,4 @@
 let count = 0;
-let blockUpdate = false;
 let users = [];
 
 function hideLoader() {
@@ -45,14 +44,9 @@ function loadUsers() {
   });
 }
 
-function loadMore(force) {
-  if (blockUpdate && !force) return;
-  blockUpdate = true;
+function loadMore() {
   showLoader();
   loadUsers();
-  setTimeout(function () {
-    blockUpdate = false;
-  }, 2000);
 }
 
 function deleteUser(id, confirm) {
@@ -65,7 +59,7 @@ function deleteUser(id, confirm) {
       Materialize.toast(response.message, 5000);
       count = 0;
       $('#userlist').html('');
-      loadMore(true);
+      loadMore();
     });
   } else {
     $('#modalcontent').html(
@@ -113,7 +107,7 @@ function addUser(confirm) {
       $('#userEnabled').prop('checked', true);
       $('#userAdmin').prop('checked', false);
       Materialize.updateTextFields();
-      loadMore(true);
+      loadMore();
     });
   } else {
     $('#addUserModal').openModal();

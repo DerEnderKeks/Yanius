@@ -1,9 +1,5 @@
-let blockEdit = false;
-
 function editUser() {
-  if (blockEdit) return;
-  blockEdit = true;
-  const url = '../api/users/' + searchedUser.id;
+  const url = '../../api/users/' + searchedUser.id;
   let data = {
     username: $('input[name=\'username\']').val(),
     email: $('input[name=\'email\']').val(),
@@ -20,7 +16,4 @@ function editUser() {
   }).always(function (response) {
     Materialize.toast(response.message, 5000);
   });
-  setTimeout(function () {
-    blockEdit = false;
-  }, 2000);
 }

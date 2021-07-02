@@ -1,5 +1,3 @@
-let blockEdit = false;
-let blockKey = false;
 let KeyHidden = true;
 
 function showAPIKey() {
@@ -10,8 +8,6 @@ function showAPIKey() {
 }
 
 function regenerateAPIKey() {
-  if (blockKey) return;
-  blockKey = true;
   const url = '../api/regenerateAPIKey';
   $.ajax({
     url: url,
@@ -23,14 +19,9 @@ function regenerateAPIKey() {
       Materialize.updateTextFields();
     }
   });
-  setTimeout(function () {
-    blockKey = false;
-  }, 2000);
 }
 
 function editUser() {
-  if (blockEdit) return;
-  blockEdit = true;
   const url = '../api/users/' + user.id;
   let data = {
     email: $('input[name=\'email\']').val(),
@@ -45,9 +36,6 @@ function editUser() {
   }).always(function (response) {
     Materialize.toast(response.message, 5000);
   });
-  setTimeout(function () {
-    blockEdit = false;
-  }, 2000);
 }
 
 $('#account').addClass('active');
