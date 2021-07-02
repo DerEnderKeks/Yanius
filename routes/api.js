@@ -239,11 +239,10 @@ router.post('/users/:userId', sessionHandler.ensureAuthenticated, ensurePermitte
   user.id = req.searchedUser.id;
   user.email = req.body.email;
   if (req.body.password) user.password = req.body.password;
-  user.apiKey = req.body.apiKey;
   if (req.user.isAdmin) {
     if (req.body.username) user.username = req.body.username;
-    if (req.body.isAdmin) user.isAdmin = req.body.isAdmin;
-    if (req.body.enabled) user.enabled = req.body.enabled;
+    if (req.body.isAdmin != null) user.isAdmin = req.body.isAdmin;
+    if (req.body.enabled != null) user.enabled = req.body.enabled;
   }
 
   if (user.username && (typeof user.username !== 'string' || !/^[a-zA-Z0-9_]{4,24}$/.test(user.username))) return end(res, 400, 'Invalid Username');
