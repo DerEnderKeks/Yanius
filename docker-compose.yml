@@ -1,0 +1,15 @@
+version: '3'
+services:
+  app:
+    image: derenderkeks/yanius:latest
+    volumes:
+      - '/app/upload'
+      - '/app/config'
+    ports:
+      - '56792'
+    restart: 'unless-stopped'
+  db:
+    image: rethinkdb:2.4.1
+    volumes:
+      - '/data'
+    restart: 'unless-stopped'
