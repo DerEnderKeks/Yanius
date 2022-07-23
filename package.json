@@ -24,7 +24,7 @@
     "express-flash": "0.0.2",
     "express-minify": "^0.2.0",
     "express-session": "^1.15.5",
-    "file-type": "^3.9.0",
+    "file-type": "^16.5.4",
     "hat": "0.0.3",
     "http-status-codes": "^1.2.0",
     "mime": "^1.4.0",
