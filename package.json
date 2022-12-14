@@ -19,7 +19,7 @@
     "cookie-parser": "^1.4.3",
     "deasync": "^0.1.10",
     "debug": "^2.6.8",
-    "express": "^4.15.4",
+    "express": "^4.17.3",
     "express-fileupload": "^1.2.1",
     "express-flash": "0.0.2",
     "express-minify": "^0.2.0",
